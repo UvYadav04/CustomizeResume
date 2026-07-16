@@ -114,11 +114,6 @@ export const RESUME_SEED: Resume = {
       { name: "Caching", bold: false },
     ],
 
-    "Libraries & Frameworks": [
-      { name: "Cesium.js", bold: false },
-      { name: "Pydantic", bold: false },
-    ],
-
     "Tools / DevOps / Cloud": [
       { name: "Docker", bold: false },
       { name: "AWS", bold: false },
@@ -127,6 +122,8 @@ export const RESUME_SEED: Resume = {
       { name: "GitHub", bold: false },
       { name: "CI/CD", bold: false },
       { name: "OpenAI", bold: false },
+      { name: "Claude", bold: false },
+      { name: "Codex", bold: false },
     ]
   },
   experience: [

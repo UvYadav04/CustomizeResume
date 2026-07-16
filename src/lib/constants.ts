@@ -94,8 +94,7 @@ export const SKILL_CATEGORY_ORDER = [
   "Backend",
   "Databases",
   "AI & GenAI",
-  "AI Systems & Architecture",
-  "Deep Learning",
+  "Machine Learning",
   "Software Engineering",
   "Tools / DevOps / Cloud"
 ];
@@ -120,8 +119,8 @@ export const ROLE_PRESETS: RolePreset[] = [
 // and rebolds skills *within* them, never introduces a category that isn't
 // listed here for that role.
 export const ROLE_CATEGORY_ORDER: Record<string, string[]> = {
-  "ai-engineer": ["Programming Languages", "AI & GenAI", "AI Systems & Architecture", "Deep Learning", "Databases"],
-  "fullstack-ai-developer": ["Programming Languages", "AI & GenAI", "Frontend", "Backend", "Databases"],
+  "ai-engineer": ["Programming Languages", "AI & GenAI", "Backend", "Databases", "Machine Learning", "Tools / DevOps / Cloud"],
+  "fullstack-ai-developer": ["Programming Languages", "AI & GenAI", "Frontend", "Backend", "Databases", "Tools / DevOps / Cloud"],
   "software-developer": ["Programming Languages", "Software Engineering", "Backend", "Databases", "Tools / DevOps / Cloud"],
   "fullstack-developer": ["Programming Languages", "Frontend", "Backend", "Databases", "Tools / DevOps / Cloud"],
   "backend-developer": ["Programming Languages", "Backend", "Databases", "Software Engineering", "Tools / DevOps / Cloud"]
