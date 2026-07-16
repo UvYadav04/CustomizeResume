@@ -38,14 +38,14 @@ export function buildTailorPrompt(resume: Resume, jobDescription: JobDescription
   const whitelist = settings.skillWhitelist || [];
   const allowedSkills = buildAllowedSkillCatalog(resume, whitelist);
   const mutableResume = getMutableResumePayload(resume);
-  // The dropdown selection (e.g. "Full Stack Developer") is the person's
-  // explicit, structured choice - separate from the free-text job title
-  // field, which might be a specific posting's title ("Senior SWE II") that
-  // doesn't itself say what category of role it is. Both get sent, but the
-  // system prompt leans on this label to force the summary's identity to
-  // actually match what was selected, instead of just lightly editing
-  // whatever framing the master resume's summary already had.
-  const targetRoleCategory = ROLE_PRESETS.find((preset) => preset.id === jobDescription.roleType)?.label || jobDescription.title;
+  // The free-text job title is what the person actually typed for this
+  // application (e.g. a specific posting's title like "Senior SWE II") and
+  // takes priority for the summary's stated identity. The role-type dropdown
+  // (e.g. "Full Stack Developer") is only a fallback category label used
+  // when no job title was entered, plus it still scopes which skill
+  // categories get sent (see ROLE_CATEGORY_ORDER) and the audience
+  // instruction below.
+  const targetRoleCategory = jobDescription.title || ROLE_PRESETS.find((preset) => preset.id === jobDescription.roleType)?.label || "";
 
   const system = `
   You are an expert resume tailoring assistant.
