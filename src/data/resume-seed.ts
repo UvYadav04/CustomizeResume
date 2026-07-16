@@ -126,7 +126,7 @@ export const RESUME_SEED: Resume = {
       { name: "Git", bold: false },
       { name: "GitHub", bold: false },
       { name: "CI/CD", bold: false },
-      { name: "OpenAPI", bold: false },
+      { name: "OpenAI", bold: false },
     ]
   },
   experience: [
