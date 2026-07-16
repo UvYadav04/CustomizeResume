@@ -161,7 +161,7 @@ export const RESUME_SEED: Resume = {
       points: [
         "Developed a project management platform with List, Kanban, and Calendar views, streamlining task allocation work-flows and reducing manual coordination effort by 15+ hours per week.",
         "Enhanced application performance and security using Next.js SSR, Zod validation, and Zustand state management, resulting in 40% faster page loads, 20–25% improved query efficiency, and a 30–40% reduction in unauthorized access incidents.",
-        "Implemented a WebSocket-powered real-time messaging system with file-sharing support, enabling low-latency communication and seamless collaboration between brands and influencers on the Brandfolio platform."
+        "Implemented a WebSocket-powered real-time messaging system with file-sharing, message delivery, read receipts, and online presence, enabling seamless collaboration between brands and influencers."
       ],
       skillsUsed: [
         { name: "React", bold: false },
