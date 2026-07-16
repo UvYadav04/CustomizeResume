@@ -121,7 +121,7 @@ export const ROLE_PRESETS: RolePreset[] = [
 export const ROLE_CATEGORY_ORDER: Record<string, string[]> = {
   "ai-engineer": ["Programming Languages", "AI & GenAI", "Backend", "Databases", "Machine Learning", "Tools / DevOps / Cloud"],
   "fullstack-ai-developer": ["Programming Languages", "AI & GenAI", "Frontend", "Backend", "Databases", "Tools / DevOps / Cloud"],
-  "software-developer": ["Programming Languages", "Software Engineering", "Backend", "Databases", "Tools / DevOps / Cloud"],
+  "software-developer": ["Programming Languages", "Frontend", "Backend", "Software Engineering", "Databases", "Tools / DevOps / Cloud"],
   "fullstack-developer": ["Programming Languages", "Frontend", "Backend", "Databases", "Tools / DevOps / Cloud"],
   "backend-developer": ["Programming Languages", "Backend", "Databases", "Software Engineering", "Tools / DevOps / Cloud"]
 };

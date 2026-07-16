@@ -2,27 +2,14 @@ import { SKILL_CATEGORY_ORDER } from "@/lib/constants";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SyncedTextarea } from "./SyncedTextarea";
-import type { Resume, SkillItem } from "@/lib/types";
+import { itemsToText, textToItems } from "@/lib/skillText";
+import type { Resume } from "@/lib/types";
 
 // Skill categories are edited as a comma-separated list, e.g.
 // "Python, **LangChain**, RAG" — wrap a name in ** to mark it bold by
 // default (the tailoring step will still bold/unbold based on the JD).
-function itemsToText(items: SkillItem[] = []) {
-  return items.map((item) => (item.bold ? `**${item.name}**` : item.name)).join(", ");
-}
-
-function textToItems(text: string): SkillItem[] {
-  return text
-    .split(",")
-    .map((raw) => raw.trim())
-    .filter(Boolean)
-    .map((raw) => {
-      const bold = raw.startsWith("**") && raw.endsWith("**");
-      const name = bold ? raw.slice(2, -2).trim() : raw;
-      return { name, bold };
-    })
-    .filter((item) => item.name);
-}
+// itemsToText/textToItems now live in lib/skillText.ts (shared with the
+// Review panel's editable skill lists).
 
 // Draft-only, like the other tabs - edits update the dialog's local draft
 // resume (see SettingsDialog.tsx), not the store/localStorage directly.

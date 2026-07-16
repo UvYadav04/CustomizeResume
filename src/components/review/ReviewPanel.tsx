@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { DiffRow } from "./DiffRow";
 import { SkillListPreview } from "./SkillListPreview";
+import { EditableSkillList } from "./EditableSkillList";
 import { CheckCheck, Sparkles, XCircle } from "lucide-react";
 import { clone } from "@/lib/utils";
 
@@ -18,6 +19,12 @@ export function ReviewPanel() {
   const setSkillSelection = useAppStore((s) => s.setSkillSelection);
   const setExperienceSelection = useAppStore((s) => s.setExperienceSelection);
   const setProjectSelection = useAppStore((s) => s.setProjectSelection);
+  const editSummarySuggestion = useAppStore((s) => s.editSummarySuggestion);
+  const editSkillGroupSuggestion = useAppStore((s) => s.editSkillGroupSuggestion);
+  const editExperiencePointSuggestion = useAppStore((s) => s.editExperiencePointSuggestion);
+  const editExperienceSkillsUsedSuggestion = useAppStore((s) => s.editExperienceSkillsUsedSuggestion);
+  const editProjectAboutSuggestion = useAppStore((s) => s.editProjectAboutSuggestion);
+  const editProjectTechStackSuggestion = useAppStore((s) => s.editProjectTechStackSuggestion);
 
   if (isGenerating) {
     return (
@@ -73,6 +80,8 @@ export function ReviewPanel() {
             <DiffRow
               current={suggestions.summary.current}
               suggested={suggestions.summary.suggested}
+              suggestedText={suggestions.summary.suggested}
+              onSuggestedTextChange={editSummarySuggestion}
               reason={suggestions.summary.reason}
               state={selections.summary}
               onAccept={() => setPointSelection("summary", "accepted")}
@@ -90,7 +99,7 @@ export function ReviewPanel() {
                   key={group.category}
                   label={group.category}
                   current={<SkillListPreview items={group.current} />}
-                  suggested={<SkillListPreview items={group.suggested} />}
+                  suggested={<EditableSkillList items={group.suggested} onChange={(items) => editSkillGroupSuggestion(group.category, items)} />}
                   reason={group.reason}
                   state={selections.skills[group.category] || "pending"}
                   onAccept={() => setSkillSelection(group.category, "accepted")}
@@ -115,6 +124,8 @@ export function ReviewPanel() {
                       key={pointIndex}
                       current={point.current}
                       suggested={point.suggested}
+                      suggestedText={point.suggested}
+                      onSuggestedTextChange={(text) => editExperiencePointSuggestion(entryIndex, pointIndex, text)}
                       reason={point.reason}
                       state={state.points[pointIndex] || "pending"}
                       onAccept={() => {
@@ -132,7 +143,7 @@ export function ReviewPanel() {
                   <DiffRow
                     label="Tech stack"
                     current={<SkillListPreview items={entry.skillsUsed.current} />}
-                    suggested={<SkillListPreview items={entry.skillsUsed.suggested} />}
+                    suggested={<EditableSkillList items={entry.skillsUsed.suggested} onChange={(items) => editExperienceSkillsUsedSuggestion(entryIndex, items)} />}
                     reason={entry.skillsUsed.reason}
                     state={state.skillsUsed}
                     onAccept={() => setExperienceSelection(entryIndex, { skillsUsed: "accepted" })}
@@ -164,6 +175,8 @@ export function ReviewPanel() {
                   <DiffRow
                     current={project.about.current}
                     suggested={project.about.suggested}
+                    suggestedText={project.about.suggested}
+                    onSuggestedTextChange={(text) => editProjectAboutSuggestion(projectIndex, text)}
                     reason={project.about.reason}
                     state={state.about}
                     onAccept={() => setProjectSelection(projectIndex, { about: "accepted" })}
@@ -172,7 +185,7 @@ export function ReviewPanel() {
                   <DiffRow
                     label="Tech stack"
                     current={<SkillListPreview items={project.techStack.current} />}
-                    suggested={<SkillListPreview items={project.techStack.suggested} />}
+                    suggested={<EditableSkillList items={project.techStack.suggested} onChange={(items) => editProjectTechStackSuggestion(projectIndex, items)} />}
                     reason={project.techStack.reason}
                     state={state.techStack}
                     onAccept={() => setProjectSelection(projectIndex, { techStack: "accepted" })}

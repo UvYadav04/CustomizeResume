@@ -20,6 +20,7 @@ import type {
   ReviewSelections,
   SelectionState,
   Settings,
+  SkillItem,
   Suggestions,
   TemplateOverride
 } from "@/lib/types";
@@ -59,6 +60,17 @@ interface AppState {
   setExperienceSelection: (index: number, patch: Partial<ExperienceSelection>) => void;
   setProjectSelection: (index: number, patch: Partial<ProjectSelection>) => void;
   bulkSetSection: (section: "summary" | "skills" | "experience" | "projects", value: SelectionState) => void;
+  // Lets the person hand-edit a suggestion in place (add a word to the
+  // summary, drop a skill, etc.) before/after accepting it - these just
+  // rewrite the relevant `.suggested` field on the in-memory suggestions
+  // object. Whether the edit actually lands in the exported resume still
+  // depends on the row's accept/reject state, same as before.
+  editSummarySuggestion: (text: string) => void;
+  editSkillGroupSuggestion: (category: string, items: SkillItem[]) => void;
+  editExperiencePointSuggestion: (entryIndex: number, pointIndex: number, text: string) => void;
+  editExperienceSkillsUsedSuggestion: (entryIndex: number, items: SkillItem[]) => void;
+  editProjectAboutSuggestion: (projectIndex: number, text: string) => void;
+  editProjectTechStackSuggestion: (projectIndex: number, items: SkillItem[]) => void;
   reset: () => void;
   previewResume: () => Resume;
 }
@@ -198,6 +210,64 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { selections } = get();
     if (!selections) return;
     set({ selections: setSectionSelection(selections, section, value) });
+  },
+
+  editSummarySuggestion: (text) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    next.summary.suggested = text;
+    set({ suggestions: next });
+  },
+
+  editSkillGroupSuggestion: (category, items) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    const group = next.skills.find((g) => g.category === category);
+    if (!group) return;
+    group.suggested = items;
+    set({ suggestions: next });
+  },
+
+  editExperiencePointSuggestion: (entryIndex, pointIndex, text) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    const entry = next.experience[entryIndex];
+    if (!entry?.points[pointIndex]) return;
+    entry.points[pointIndex].suggested = text;
+    set({ suggestions: next });
+  },
+
+  editExperienceSkillsUsedSuggestion: (entryIndex, items) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    const entry = next.experience[entryIndex];
+    if (!entry) return;
+    entry.skillsUsed.suggested = items;
+    set({ suggestions: next });
+  },
+
+  editProjectAboutSuggestion: (projectIndex, text) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    const project = next.projects[projectIndex];
+    if (!project) return;
+    project.about.suggested = text;
+    set({ suggestions: next });
+  },
+
+  editProjectTechStackSuggestion: (projectIndex, items) => {
+    const { suggestions } = get();
+    if (!suggestions) return;
+    const next = clone(suggestions);
+    const project = next.projects[projectIndex];
+    if (!project) return;
+    project.techStack.suggested = items;
+    set({ suggestions: next });
   },
 
   reset: () => {
