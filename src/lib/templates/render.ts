@@ -110,8 +110,8 @@ export function renderResumeHtml(resume: Resume): string {
           <article class="rt-entry">
             <div class="rt-project-top">
               <h3 class="rt-project-name">
-                ${escapeHtml(item.name.split("—")[0] || "")}
-                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-faint); font-weight:normal; margin-left:0.4em;">${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
+                ${escapeHtml(item.name.split("—")[0].trim() || "")}
+                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-faint); font-weight:normal; margin-left:0.4em;">: ${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
               </h3>
               <div class="rt-project-links">${renderLinks(item.links || [])}</div>
             </div>
