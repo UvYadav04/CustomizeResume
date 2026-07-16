@@ -119,7 +119,7 @@ export const RESUME_SEED: Resume = {
       { name: "Pydantic", bold: false },
     ],
 
-    "Cloud / DevOps / Tools": [
+    "Tools / DevOps / Cloud": [
       { name: "Docker", bold: false },
       { name: "AWS", bold: false },
       { name: "Nginx", bold: false },
