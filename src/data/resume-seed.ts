@@ -1,0 +1,317 @@
+import type { Resume } from "@/lib/types";
+
+// Default/master resume, seeded once on first load and then persisted to
+// localStorage. Edit freely from Settings > Summary/Skills, or by editing
+// this file before first run.
+export const RESUME_SEED: Resume = {
+  name: "Dinesh Yadav",
+  contact: {
+    email: "dineshnirban01@gmail.com",
+    phone: "+91-9813163920",
+    location: "Gurugram, India",
+    links: [
+      { label: "GitHub", url: "https://github.com/Uvyadav04" },
+      { label: "LinkedIn", url: "https://linkedin.com/in/dineshyadav" },
+      { label: "Portfolio", url: "https://dineshyadav.onrender.com" },
+      { label: "LeetCode", url: "https://leetcode.com/u/dineshnirban01" }
+    ]
+  },
+  summary:
+    "Performance-oriented AI Software Engineer focused on building LLM-powered applications, scalable AI systems, and production-ready backend architectures with expertise in Generative AI, RAG pipelines, agentic workflows, system design, and backend engineering, leveraging Data Structures and Algorithmic knowledge to build efficient and scalable systems at scale.",
+  skills: {
+    "Programming Languages": [
+      { name: "C++", bold: false },
+      { name: "Python", bold: false },
+      { name: "JavaScript", bold: false },
+      { name: "TypeScript", bold: false },
+      { name: "SQL", bold: false },
+      { name: "C", bold: false },
+    ],
+    Frontend: [
+      { name: "React.js", bold: false },
+      { name: "Next.js", bold: false },
+      { name: "HTML5", bold: false },
+      { name: "CSS3", bold: false },
+      { name: "Redux", bold: false },
+      { name: "Tailwind CSS", bold: false },
+      { name: "ShadCN", bold: false },
+      { name: "Zustand", bold: false },
+    ],
+    Backend: [
+      { name: "Node.js", bold: false },
+      { name: "Express.js", bold: false },
+      { name: "FastAPI", bold: false },
+      { name: "JWT", bold: false },
+      { name: "REST APIs", bold: false },
+      { name: "Design Patterns", bold: false },
+      { name: "WebSockets", bold: false },
+      { name: "SSE", bold: false },
+      { name: "OAuth 2.0", bold: false },
+      { name: "API Design", bold: false },
+      { name: "Microservices", bold: false },
+      { name: "Background Jobs", bold: false },
+      { name: "Async Programming", bold: false },
+      { name: "Rate Limiting", bold: false },
+      { name: "Caching", bold: false },
+      { name: "Authentication & Authorization", bold: false },
+      { name: "Webhooks", bold: false },
+      { name: "Kafka", bold: false }
+    ],
+    Databases: [
+      { name: "MongoDB", bold: false },
+      { name: "Redis", bold: false },
+      { name: "Vector Databases", bold: false },
+      { name: "PostgreSQL", bold: false },
+      { name: "Chroma", bold: false },
+      { name: "Qdrant", bold: false },
+      { name: "MySQL", bold: false },
+      { name: "pgvector", bold: false },
+      { name: "Database Design", bold: false },
+      { name: "Indexing", bold: false },
+      { name: "Query Optimization", bold: false },
+      { name: "HNSW", bold: false },
+      { name: "Metadata Filtering", bold: false },
+      { name: "Hybrid Search", bold: false }
+    ],
+    "AI & GenAI": [
+      { name: "LLMs", bold: false },
+      { name: "Agentic AI", bold: false },
+      { name: "RAG", bold: false },
+      { name: "LangChain", bold: false },
+      { name: "LangGraph", bold: false },
+      { name: "Prompt Engineering", bold: false },
+      { name: "QLoRA", bold: false },
+      { name: "AI Agents", bold: false },
+      { name: "AutoGen", bold: false },
+      { name: "Embeddings", bold: false },
+      { name: "Semantic Search", bold: false },
+      { name: "Hybrid Search", bold: false },
+      { name: "Re-ranking", bold: false },
+      { name: "Tool Calling", bold: false },
+      { name: "Function Calling", bold: false },
+      { name: "Structured Outputs", bold: false },
+      { name: "Multi-Agent Systems", bold: false },
+      { name: "LLM Evaluation", bold: false },
+      { name: "RAG Evaluation", bold: false },
+      { name: "Guardrails", bold: false },
+      { name: "Context Engineering", bold: false },
+      { name: "Memory Systems", bold: false },
+      { name: "Model Serving", bold: false },
+      { name: "Fine-Tuning", bold: false },
+      { name: "LoRA", bold: false }
+    ],
+    "AI Systems & Architecture": [
+      { name: "Agent Orchestration", bold: false },
+      { name: "Multi-Agent Architecture", bold: false },
+      { name: "RAG Pipelines", bold: false },
+      { name: "Retrieval Systems", bold: false },
+      { name: "Document Processing Pipelines", bold: false },
+      { name: "Workflow Orchestration", bold: false },
+      { name: "State Machines", bold: false },
+      { name: "Human-in-the-Loop", bold: false },
+      { name: "Retry & Fallback Mechanisms", bold: false },
+      { name: "LLM Observability", bold: false },
+      { name: "Evaluation Pipelines", bold: false },
+      { name: "Context Management", bold: false },
+      { name: "Graph Retrieval", bold: false }
+    ],
+    "Deep Learning": [
+      { name: "Transformers", bold: false },
+      { name: "BERT", bold: false },
+      { name: "Neural Networks", bold: false },
+      { name: "Self-Attention", bold: false },
+      { name: "Stable Diffusion", bold: false },
+      { name: "VAE", bold: false },
+      { name: "PyTorch", bold: false },
+      { name: "CNNs", bold: false },
+      { name: "RNNs", bold: false },
+      { name: "LSTMs", bold: false },
+      { name: "GRUs", bold: false },
+      { name: "GNNs", bold: false },
+      { name: "Multi-Head Attention", bold: false },
+      { name: "Encoder-Decoder Architecture", bold: false },
+      { name: "Transfer Learning", bold: false },
+      { name: "Diffusion Models", bold: false },
+      { name: "Representation Learning", bold: false },
+      { name: "GPT", bold: false },
+      { name: "U-Net", bold: false }
+    ],
+    "Software Engineering": [
+      { name: "Data Structures & Algorithms", bold: false },
+      { name: "OOP", bold: false },
+      { name: "SOLID Principles", bold: false },
+      { name: "System Design", bold: false },
+      { name: "Low-Level Design", bold: false },
+      { name: "High-Level Design", bold: false },
+      { name: "Distributed Systems", bold: false },
+      { name: "API Design", bold: false },
+      { name: "Database Design", bold: false },
+      { name: "Caching", bold: false },
+      { name: "Concurrency", bold: false },
+      { name: "Asynchronous Processing", bold: false },
+      { name: "Event-Driven Architecture", bold: false },
+      { name: "Testing", bold: false },
+      { name: "Debugging", bold: false },
+      { name: "Performance Optimization", bold: false }
+    ],
+    "Libraries & Frameworks": [
+      { name: "Cesium.js", bold: false },
+      { name: "Redux", bold: false },
+      { name: "TanStack Query", bold: false },
+      { name: "Prisma", bold: false },
+      { name: "PyTorch", bold: false },
+      { name: "Hugging Face Transformers", bold: false },
+      { name: "Sentence Transformers", bold: false },
+      { name: "Pydantic", bold: false },
+      { name: "NumPy", bold: false },
+      { name: "Pandas", bold: false },
+      { name: "Scikit-learn", bold: false }
+    ],
+    "Tools / DevOps / Cloud": [
+      { name: "Docker", bold: false },
+      { name: "AWS", bold: false },
+      { name: "Git", bold: false },
+      { name: "GitHub", bold: false },
+      { name: "Nginx", bold: false },
+      { name: "CI/CD", bold: false },
+      { name: "Claude", bold: false },
+      { name: "Codex", bold: false },
+      { name: "MCP Servers", bold: false },
+      { name: "Linux", bold: false },
+      { name: "GitHub Actions", bold: false },
+      { name: "Docker Compose", bold: false },
+      { name: "EC2", bold: false },
+      { name: "S3", bold: false },
+      { name: "Cloudflare R2", bold: false },
+      { name: "Postman", bold: false },
+      { name: "Swagger/OpenAPI", bold: false },
+      { name: "Jupyter", bold: false },
+      { name: "Kaggle", bold: false },
+      { name: "Hugging Face", bold: false },
+      { name: "Ollama", bold: false }
+    ]
+  },
+  experience: [
+    {
+      companyName: "AeroYantra",
+      role: "Software Engineer Intern",
+      duration: "Jun 2025 - May 2026",
+      location: "Noida",
+      points: [
+        "Engineered 12+ interactive map-based tools using Cesium primitives for real-time spatial calculations, eliminating dependency on on-site measurements.",
+        "Architected a multi-format overlay ingestion pipeline supporting PDF, DXF, KML/KMZ, and IFC for seamless geospatial visualization.",
+        "Built a synchronized drone simulation system aligning real-time map movement with video playback using telemetry data for spatial-temporal analysis.",
+        "Reduced API calls by 30% and improved map load performance by re-architecting data fetching workflows, while lowering authentication-related support queries by 30% through OTP login, magic-link authentication, and password recovery flows."
+      ],
+      skillsUsed: [
+        { name: "React", bold: false },
+        { name: "Node.js", bold: false },
+        { name: "Express.js", bold: false },
+        { name: "MongoDB", bold: false },
+        { name: "Cesium.js", bold: false },
+        { name: "Redux", bold: false },
+        { name: "Python", bold: false },
+        { name: "GitLab", bold: false },
+        { name: "Geospatial Visualization", bold: false }
+      ]
+    },
+    {
+      companyName: "SapmenC",
+      role: "Software Engineer Intern",
+      duration: "Feb 2025 - Jul 2025",
+      location: "Remote",
+      points: [
+        "Developed a project management platform with List, Kanban, and Calendar views, streamlining task allocation work-flows and reducing manual coordination effort by 15+ hours per week.",
+        "Enhanced application performance and security using Next.js SSR, Zod validation, and Zustand state management, resulting in 40% faster page loads, 20–25% improved query efficiency, and a 30–40% reduction in unauthorized access incidents."
+      ],
+      skillsUsed: [
+        { name: "React", bold: false },
+        { name: "Next.js", bold: false },
+        { name: "TanStack Query", bold: false },
+        { name: "Prisma", bold: false },
+        { name: "SQL", bold: false },
+        { name: "MongoDB", bold: false },
+        { name: "Zustand", bold: false },
+        { name: "Node.js", bold: false },
+        { name: "Express.js", bold: false }
+      ]
+    }
+  ],
+  projects: [
+    {
+      name: "Architekt AI — AI-Worfklow based System Design Platform",
+      about:
+        "Built an AI-powered system design platform that generates complete and validated software architectures in 15 seconds. Improved output reliability using 2 AI validation agents with retry and fallback mechanisms, and developed an AI assistant that answers system design questions in 2-3 seconds.",
+      techStack: [
+        { name: "Agentic AI", bold: false },
+        { name: "LangGraph", bold: false },
+        { name: "LangChain", bold: false },
+        { name: "Qdrant", bold: false },
+        { name: "MongoDB", bold: false },
+        { name: "React", bold: false },
+        { name: "TypeScript", bold: false },
+        { name: "Nginx", bold: false }
+      ],
+      links: [
+        { label: "Live", url: "https://architektai.duckdns.org" },
+        { label: "GitHub", url: "https://github.com/UvYadav04/Architekt-AI---server" }
+      ]
+    },
+    {
+      name: "Research Simplified — AI-Powered Research Paper Simplifier",
+      about:
+        "Built a real-time PDF processing pipeline that delivers section-wise simplified outputs in 10-12 seconds. Engineered a RAG-powered conversational system with 2-3 second response times and reduced LLM calls by 20% through relevance-based context filtering and re-ranking.",
+      techStack: [
+        { name: "LangChain", bold: false },
+        { name: "Redis Vector DB", bold: false },
+        { name: "MongoDB", bold: false },
+        { name: "React", bold: false },
+        { name: "TypeScript", bold: false },
+        { name: "Python", bold: false },
+        { name: "AWS", bold: false },
+        { name: "Nginx", bold: false }
+      ],
+      links: [
+        { label: "Live", url: "https://researchsimplified.duckdns.org" },
+        { label: "GitHub", url: "https://github.com/UvYadav04/ResearchSimplified-server" }
+      ]
+    },
+    {
+      name: "Z-Bot — RAG-Based PDF Conversational AI",
+      about:
+        "Built a RAG-powered conversational platform that enables users to chat with PDFs using LangChain, LangGraph, and Qdrant. Achieved 3-4 second response times and reduced LLM latency by 30% through optimized retrieval of relevant document context and chat history, while enabling persistent document and conversation storage.",
+      techStack: [
+        { name: "RAG", bold: false },
+        { name: "LangChain", bold: false },
+        { name: "LangGraph", bold: false },
+        { name: "Qdrant", bold: false },
+        { name: "FastAPI", bold: false },
+        { name: "React", bold: false },
+        { name: "TypeScript", bold: false },
+        { name: "Python", bold: false },
+        { name: "AWS", bold: false }
+      ],
+      links: [
+        { label: "Live", url: "http://z-bot.duckdns.org/" },
+        { label: "GitHub", url: "https://github.com/UvYadav04/Z.bot-RAG---client" }
+      ]
+    }
+  ],
+  education: [
+    {
+      institution: "Indian Institute of Information Technology Vadodara",
+      degree: "B.Tech in Computer Science and Engineering",
+      duration: "Nov 2022 - May 2026",
+      location: "India",
+      score: "CGPA: 7.50/10",
+      coursework: [
+        "Data Structures and Algorithms",
+        "Operating Systems",
+        "Database Management Systems",
+        "Computer Networks",
+        "Object-Oriented Programming",
+        "Machine Learning"
+      ]
+    }
+  ]
+};
