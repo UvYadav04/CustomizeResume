@@ -34,11 +34,10 @@ export const RESUME_SEED: Resume = {
       { name: "HTML5", bold: false },
       { name: "CSS3", bold: false },
       { name: "Tailwind CSS", bold: false },
-      { name: "Redux Toolkit", bold: false },
+      { name: "Redux", bold: false },
       { name: "Zustand", bold: false },
       { name: "TanStack Query", bold: false },
-      { name: "ShadCN UI", bold: false },
-      { name: "Cesium.js", bold: false }
+      { name: "ShadCN UI", bold: false }
     ],
 
     Backend: [
@@ -47,15 +46,14 @@ export const RESUME_SEED: Resume = {
       { name: "FastAPI", bold: false },
       { name: "REST APIs", bold: false },
       { name: "WebSockets", bold: false },
-      { name: "Server-Sent Events (SSE)", bold: false },
+      { name: "SSE", bold: false },
       { name: "JWT", bold: false },
       { name: "OAuth 2.0", bold: false },
       { name: "Microservices", bold: false },
       { name: "Kafka", bold: false },
       { name: "BullMQ", bold: false },
       { name: "Cron Jobs", bold: false },
-      { name: "Prisma ORM", bold: false },
-      { name: "Pydantic", bold: false }
+      { name: "Prisma ORM", bold: false }
     ],
 
     Databases: [
@@ -78,16 +76,10 @@ export const RESUME_SEED: Resume = {
       { name: "Multi-Agent Systems", bold: false },
       { name: "LangChain", bold: false },
       { name: "LangGraph", bold: false },
-      { name: "Embeddings", bold: false },
-      { name: "Semantic Search", bold: false },
-      { name: "Re-ranking", bold: false },
-      { name: "Tool Calling", bold: false },
-      { name: "Function Calling", bold: false },
       { name: "Prompt Engineering", bold: false },
       { name: "Fine-Tuning", bold: false },
       { name: "LoRA", bold: false },
       { name: "QLoRA", bold: false },
-      { name: "OpenAI API", bold: false },
       { name: "Ollama", bold: false }
     ],
 
@@ -120,6 +112,11 @@ export const RESUME_SEED: Resume = {
       { name: "High-Level Design", bold: false },
       { name: "Distributed Systems", bold: false },
       { name: "Caching", bold: false },
+    ],
+
+    "Libraries & Frameworks": [
+      { name: "Cesium.js", bold: false },
+      { name: "Pydantic", bold: false },
     ],
 
     "Cloud / DevOps / Tools": [
@@ -227,7 +224,6 @@ export const RESUME_SEED: Resume = {
         { name: "LangGraph", bold: false },
         { name: "Qdrant", bold: false },
         { name: "FastAPI", bold: false },
-        { name: "Pydantic", bold: false },
         { name: "React", bold: false },
         { name: "TypeScript", bold: false },
         { name: "Python", bold: false },
