@@ -69,7 +69,7 @@ export const RESUME_SEED: Resume = {
       { name: "HNSW", bold: false }
     ],
 
-    "AI / GenAI": [
+    "AI & GenAI": [
       { name: "LLMs", bold: false },
       { name: "RAG", bold: false },
       { name: "AI Agents", bold: false },
