@@ -111,7 +111,7 @@ export function renderResumeHtml(resume: Resume): string {
             <div class="rt-project-top">
               <h3 class="rt-project-name">
                 ${escapeHtml(item.name.split("—")[0].trim() || "")}
-                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-faint); font-weight:normal; margin-left:0.4em;">: ${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
+                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-faint); font-weight:normal; margin-left:0.1em;">: ${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
               </h3>
               <div class="rt-project-links">${renderLinks(item.links || [])}</div>
             </div>
@@ -262,6 +262,13 @@ html, body {
   font-size: var(--rt-fs-entry);
   font-weight: 600;
   line-height: 1.16;
+}
+
+.rt-project-secondary {
+  color: var(--rt-faint);
+  font-weight: 400;
+  font-size: 0.89em;
+  margin-left: 0em;
 }
 
 .rt-entry-meta, .rt-entry-location, .rt-project-links, .rt-coursework {

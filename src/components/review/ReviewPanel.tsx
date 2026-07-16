@@ -152,7 +152,15 @@ export function ReviewPanel() {
               if (!state) return null;
               return (
                 <div key={project.name} className="space-y-2 rounded-md border border-dashed p-2.5">
-                  <p className="text-xs font-semibold">{project.name}</p>
+                  <p className="text-xs font-semibold">
+                    {project.name.split("—")[0].trim()}
+                    {project.name.includes("—") && (
+                      <span className="font-normal text-muted-foreground">
+                        {" "}
+                        : {project.name.split("—")[1].trim()}
+                      </span>
+                    )}
+                  </p>
                   <DiffRow
                     current={project.about.current}
                     suggested={project.about.suggested}

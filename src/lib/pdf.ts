@@ -363,7 +363,8 @@ export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate)
     sectionTitle(doc, cursor, "Projects", colors);
     resume.projects.forEach((proj) => {
       const [main, secondary] = (proj.name || "").split("—");
-      const heading = secondary ? `${main.trim()}   ${secondary.trim()}` : (main || "").trim();
+      const mainText = (main || "").trim();
+      const secondaryText = secondary ? secondary.trim() : "";
       const aboutLines = measureWrappedLineCount(doc, proj.about || "", CONTENT_W, "helvetica", FS_BODY);
       const aboutHeight = aboutLines * lh(FS_BODY, 1.33);
       const techLineHeight = proj.techStack?.length ? lh(FS_META, 1.32) + 1 : 0;
@@ -374,7 +375,17 @@ export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate)
       doc.setFontSize(FS_ENTRY);
       doc.setTextColor(colors.ink);
       const y1 = cursor.y + lh(FS_ENTRY, 1.16);
-      doc.text(heading, MARGIN_X, y1);
+      doc.text(mainText, MARGIN_X, y1);
+      if (secondaryText) {
+        const mainWidth = doc.getTextWidth(mainText);
+        doc.setFont("times", "normal");
+        doc.setFontSize(FS_ENTRY * 0.89);
+        doc.setTextColor(colors.faint);
+        doc.text(`: ${secondaryText}`, MARGIN_X + mainWidth + 1.2, y1);
+        doc.setFont("times", "bold");
+        doc.setFontSize(FS_ENTRY);
+        doc.setTextColor(colors.ink);
+      }
       if (proj.links?.length) {
         doc.setFont("courier", "normal");
         doc.setFontSize(FS_META);

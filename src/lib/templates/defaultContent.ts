@@ -51,7 +51,7 @@ export const DEFAULT_RESUME_HTML = `<main class="rt-page">
     {{#each projects}}
     <article class="rt-entry">
       <div class="rt-project-top">
-        <h3 class="rt-project-name">{{nameMain}}{{#if hasSecondaryName}} <span class="rt-project-secondary">{{nameSecondary}}</span>{{/if}}</h3>
+        <h3 class="rt-project-name">{{nameMain}}{{#if hasSecondaryName}} <span class="rt-project-secondary">: {{nameSecondary}}</span>{{/if}}</h3>
         {{#if hasLinks}}<div class="rt-project-links">{{&linksHtml}}</div>{{/if}}
       </div>
       <p class="rt-project-about">{{{about}}}</p>
