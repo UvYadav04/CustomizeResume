@@ -13,7 +13,7 @@ const CLASSIC_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
-  --rt-fs-name: 21pt;
+  --rt-fs-name: 23pt;
   --rt-fs-section: 10.5pt;
   --rt-fs-entry: 10.5pt;
   --rt-fs-role: 9.5pt;
@@ -42,7 +42,7 @@ const AI_FOCUSED_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
-  --rt-fs-name: 21pt;
+  --rt-fs-name: 23pt;
   --rt-fs-section: 10.5pt;
   --rt-fs-entry: 10.5pt;
   --rt-fs-role: 9.5pt;
@@ -70,7 +70,7 @@ const SDE_FOCUSED_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
-  --rt-fs-name: 20pt;
+  --rt-fs-name: 22pt;
   --rt-fs-section: 10pt;
   --rt-fs-entry: 10.2pt;
   --rt-fs-role: 9.3pt;

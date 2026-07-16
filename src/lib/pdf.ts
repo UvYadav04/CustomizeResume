@@ -31,7 +31,7 @@ const MARGIN_BOTTOM = 10;
 const CONTENT_W = A4_WIDTH_MM - MARGIN_X * 2;
 const PT_TO_MM = 0.352778;
 
-const FS_NAME = 21;
+const FS_NAME = 23;
 const FS_SECTION = 10.5;
 const FS_ENTRY = 10.5;
 const FS_ROLE = 9.5;
