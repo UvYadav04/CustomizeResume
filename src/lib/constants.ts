@@ -97,7 +97,6 @@ export const SKILL_CATEGORY_ORDER = [
   "AI Systems & Architecture",
   "Deep Learning",
   "Software Engineering",
-  "Libraries & Frameworks",
   "Tools / DevOps / Cloud"
 ];
 
@@ -124,7 +123,7 @@ export const ROLE_CATEGORY_ORDER: Record<string, string[]> = {
   "ai-engineer": ["Programming Languages", "AI & GenAI", "AI Systems & Architecture", "Deep Learning", "Databases"],
   "fullstack-ai-developer": ["Programming Languages", "AI & GenAI", "Frontend", "Backend", "Databases"],
   "software-developer": ["Programming Languages", "Software Engineering", "Backend", "Databases", "Tools / DevOps / Cloud"],
-  "fullstack-developer": ["Programming Languages", "Frontend", "Backend", "Databases", "Libraries & Frameworks"],
+  "fullstack-developer": ["Programming Languages", "Frontend", "Backend", "Databases", "Tools / DevOps / Cloud"],
   "backend-developer": ["Programming Languages", "Backend", "Databases", "Software Engineering", "Tools / DevOps / Cloud"]
 };
 
