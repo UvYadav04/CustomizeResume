@@ -102,7 +102,7 @@ PROJECTS:
     ...(whitelist.length ? { userSkillWhitelist: whitelist, allowedSkills: allowedSkills.all } : {}),
     resume: mutableResume,
     outputFormat: {
-      summary: { suggested: "string", reason: "string" },
+      summary: { sugagested: "string", reason: "string" },
       skills: [{ category: "string", suggested: [{ name: "string", bold: false }], reason: "string" }],
       experience: [
         {
