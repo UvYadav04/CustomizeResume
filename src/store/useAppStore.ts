@@ -69,7 +69,7 @@ interface AppState {
   editSkillGroupSuggestion: (category: string, items: SkillItem[]) => void;
   editExperiencePointSuggestion: (entryIndex: number, pointIndex: number, text: string) => void;
   editExperienceSkillsUsedSuggestion: (entryIndex: number, items: SkillItem[]) => void;
-  editProjectAboutSuggestion: (projectIndex: number, text: string) => void;
+  editProjectPointSuggestion: (projectIndex: number, pointIndex: number, text: string) => void;
   editProjectTechStackSuggestion: (projectIndex: number, items: SkillItem[]) => void;
   reset: () => void;
   previewResume: () => Resume;
@@ -250,13 +250,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ suggestions: next });
   },
 
-  editProjectAboutSuggestion: (projectIndex, text) => {
+  editProjectPointSuggestion: (projectIndex, pointIndex, text) => {
     const { suggestions } = get();
     if (!suggestions) return;
     const next = clone(suggestions);
     const project = next.projects[projectIndex];
-    if (!project) return;
-    project.about.suggested = text;
+    if (!project?.points[pointIndex]) return;
+    project.points[pointIndex].suggested = text;
     set({ suggestions: next });
   },
 

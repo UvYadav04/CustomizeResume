@@ -2,7 +2,8 @@ import { BASE_TEMPLATE_STYLES } from "./render";
 import { DEFAULT_RESUME_HTML } from "./defaultContent";
 import { renderMiniTemplate } from "./engine";
 import { buildTemplateContext } from "./context";
-import type { Resume, ResumeTemplate, TemplateOverride } from "../types";
+import { DEFAULT_LAYOUT_SETTINGS } from "../constants";
+import type { LayoutSettings, Resume, ResumeTemplate, TemplateOverride } from "../types";
 
 // Font import is loaded once at document level (see App.tsx) rather than
 // per-template @import, since multiple templates may render side by side.
@@ -13,6 +14,11 @@ const CLASSIC_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
+  /* Overridden per-render by buildLayoutOverrideCss() (settings.layout) - the
+     values here are just the fallback if that override is ever missing. */
+  --rt-pad-top: 3.5mm;
+  --rt-pad-x: 11mm;
+  --rt-pad-bottom: 8mm;
   --rt-fs-name: 23pt;
   --rt-fs-section: 10.5pt;
   --rt-fs-entry: 10.5pt;
@@ -42,6 +48,11 @@ const AI_FOCUSED_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
+  /* Overridden per-render by buildLayoutOverrideCss() (settings.layout) - the
+     values here are just the fallback if that override is ever missing. */
+  --rt-pad-top: 3.5mm;
+  --rt-pad-x: 11mm;
+  --rt-pad-bottom: 8mm;
   --rt-fs-name: 23pt;
   --rt-fs-section: 10.5pt;
   --rt-fs-entry: 10.5pt;
@@ -70,6 +81,11 @@ const SDE_FOCUSED_TOKENS = `
 :root {
   --rt-page-width: 210mm;
   --rt-page-height: 297mm;
+  /* Overridden per-render by buildLayoutOverrideCss() (settings.layout) - the
+     values here are just the fallback if that override is ever missing. */
+  --rt-pad-top: 3.5mm;
+  --rt-pad-x: 11mm;
+  --rt-pad-bottom: 8mm;
   --rt-fs-name: 22pt;
   --rt-fs-section: 10pt;
   --rt-fs-entry: 10.2pt;
@@ -148,6 +164,21 @@ export function resolveTemplate(templateId: string, roleAudience: "ai" | "sde" |
   return getTemplateById(templateId);
 }
 
+// A small `:root { ... }` block appended AFTER the template's own CSS, so it
+// wins the cascade (equal specificity, later wins) and overrides the
+// fallback --rt-pad-* values baked into each template's token block above.
+// This is what makes Settings > Templates > Page spacing actually take
+// effect without needing to touch each template's stylesheet by hand.
+export function buildLayoutOverrideCss(layout: LayoutSettings): string {
+  return `
+:root {
+  --rt-pad-top: ${layout.paddingTop}mm;
+  --rt-pad-x: ${layout.paddingX}mm;
+  --rt-pad-bottom: ${layout.paddingBottom}mm;
+}
+`;
+}
+
 // Applies a saved per-template override (from Settings > Templates, only
 // written once someone clicks Save) on top of the built-in defaults, then
 // renders it through the mini-template engine. This is the single place
@@ -155,10 +186,11 @@ export function resolveTemplate(templateId: string, roleAudience: "ai" | "sde" |
 export function renderTemplateWithOverride(
   template: ResumeTemplate,
   resume: Resume,
-  override?: TemplateOverride
+  override?: TemplateOverride,
+  layout: LayoutSettings = DEFAULT_LAYOUT_SETTINGS
 ): { html: string; css: string } {
   const htmlSource = override?.html || template.defaultHtml;
-  const css = override?.css || template.styles;
+  const css = (override?.css || template.styles) + buildLayoutOverrideCss(layout);
   const html = renderMiniTemplate(htmlSource, buildTemplateContext(resume));
   return { html, css };
 }

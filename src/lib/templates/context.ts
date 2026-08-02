@@ -89,7 +89,7 @@ export function buildTemplateContext(resume: Resume) {
         nameMain: (main || "").trim(),
         nameSecondary: (secondary || "").trim(),
         hasSecondaryName: Boolean(secondary && secondary.trim()),
-        about: item.about || "",
+        points: (item.points || []).map((text) => ({ text })),
         links: item.links || [],
         linksHtml: renderLinksHtml(item.links || []),
         hasLinks: Boolean(item.links?.length),
@@ -106,7 +106,9 @@ export function buildTemplateContext(resume: Resume) {
       hasScore: Boolean(item.score),
       hasCoursework: Boolean(item.coursework?.length),
       courseworkJoined: (item.coursework || []).join(", ")
-    }))
+    })),
+    hasExtraCurricular: Boolean(resume.extraCurricular?.length),
+    extraCurricular: (resume.extraCurricular || []).map((text) => ({ text }))
   };
 }
 

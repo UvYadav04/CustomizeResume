@@ -41,8 +41,8 @@ export function Header() {
   );
 
   const { html, css } = useMemo(
-    () => renderTemplateWithOverride(template, previewResume, templateOverrides[template.id]),
-    [template, previewResume, templateOverrides]
+    () => renderTemplateWithOverride(template, previewResume, templateOverrides[template.id], settings.layout),
+    [template, previewResume, templateOverrides, settings.layout]
   );
 
   const filenameBase = useMemo(() => {
@@ -60,7 +60,7 @@ export function Header() {
   async function handleDownload() {
     setIsDownloading(true);
     try {
-      await downloadResumePdf(previewResume, template, `${filenameBase}.pdf`);
+      await downloadResumePdf(previewResume, template, `${filenameBase}.pdf`, settings.layout);
       toast.success("Resume downloaded.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not generate PDF.");

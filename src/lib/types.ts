@@ -26,7 +26,7 @@ export interface ResumeExperience {
 
 export interface ResumeProject {
   name: string;
-  about: string;
+  points: string[];
   techStack: SkillItem[];
   links?: ResumeLink[];
 }
@@ -48,6 +48,10 @@ export interface Resume {
   experience: ResumeExperience[];
   projects: ResumeProject[];
   education: ResumeEducation[];
+  // Optional trailing section (e.g. clubs, hackathons, positions of
+  // responsibility). Rendered as a plain bullet list; hidden entirely when
+  // empty, same pattern as education.coursework.
+  extraCurricular?: string[];
 }
 
 export type ProviderId = "groq" | "openai" | "gemini" | "ollama";
@@ -59,9 +63,20 @@ export interface ProviderSettings {
   enabled: boolean;
 }
 
+// Page padding, in mm, shared by both render paths (CSS preview/print and
+// the jsPDF export) so the two stay pixel-consistent. `paddingX` is a single
+// value applied to both the left and right edges (they're always kept
+// symmetric - there's no separate left/right control).
+export interface LayoutSettings {
+  paddingTop: number;
+  paddingX: number;
+  paddingBottom: number;
+}
+
 export interface Settings {
   templateId: string;
   skillWhitelist: string[];
+  layout: LayoutSettings;
   providerOrder: ProviderId[];
   providers: Record<ProviderId, ProviderSettings>;
 }
@@ -102,7 +117,7 @@ export interface SuggestedExperience {
 
 export interface SuggestedProject {
   name: string;
-  about: SuggestedField;
+  points: SuggestedField[];
   techStack: {
     current: SkillItem[];
     suggested: SkillItem[];
@@ -125,7 +140,7 @@ export interface ExperienceSelection {
 
 export interface ProjectSelection {
   all: SelectionState;
-  about: SelectionState;
+  points: SelectionState[];
   techStack: SelectionState;
 }
 

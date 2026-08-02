@@ -29,7 +29,6 @@ const ATOMIC_SELECTOR = [
   ".rt-tech-line",
   ".rt-entry",
   ".rt-entry-bullets li",
-  ".rt-project-about",
   ".rt-edu-degree",
   ".rt-coursework"
 ].join(", ");

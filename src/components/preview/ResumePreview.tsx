@@ -43,8 +43,8 @@ export function ResumePreview() {
   // unsaved edits in that dialog stay local to it until the person clicks
   // Save, so this panel and the PDF export never show half-typed markup.
   const { html, css } = useMemo(
-    () => renderTemplateWithOverride(template, previewResume, templateOverrides[template.id]),
-    [template, previewResume, templateOverrides]
+    () => renderTemplateWithOverride(template, previewResume, templateOverrides[template.id], settings.layout),
+    [template, previewResume, templateOverrides, settings.layout]
   );
 
   const srcDoc = useMemo(() => {
@@ -80,7 +80,7 @@ export function ResumePreview() {
     try {
       const company = jobDescription.company.trim().replace(/\s+/g, "_");
       const filename = company ? `${RESUME_FILE_BASENAME}_${company}.pdf` : `${RESUME_FILE_BASENAME}.pdf`;
-      await downloadResumePdf(previewResume, template, filename);
+      await downloadResumePdf(previewResume, template, filename, settings.layout);
       toast.success("Resume downloaded.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not generate PDF.");

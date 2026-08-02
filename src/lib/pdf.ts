@@ -1,7 +1,8 @@
 import jsPDF from "jspdf";
-import type { Resume, ResumeLink, ResumeTemplate, SkillItem } from "./types";
+import type { LayoutSettings, Resume, ResumeLink, ResumeTemplate, SkillItem } from "./types";
 import { getTemplateColorTokens } from "./templates/tokens";
 import { drawWrappedRichText, measureWrappedLineCount } from "./pdfRichText";
+import { DEFAULT_LAYOUT_SETTINGS } from "./constants";
 
 // Renders the resume directly with jsPDF's native text APIs - real,
 // selectable, ATS-parseable text and real embedded links, not a rasterized
@@ -25,10 +26,24 @@ import { drawWrappedRichText, measureWrappedLineCount } from "./pdfRichText";
 // the on-screen preview, not the downloaded PDF.
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
-const MARGIN_X = 13;
-const MARGIN_TOP = 0;
-const MARGIN_BOTTOM = 10;
-const CONTENT_W = A4_WIDTH_MM - MARGIN_X * 2;
+// Page margins - mutable because they're driven by settings.layout at
+// buildResumePdfDocument() call time (see applyLayoutMargins below), not
+// fixed constants. Every helper in this file reads these as module-level
+// state rather than taking them as parameters, mirroring the existing
+// Cursor-by-reference pattern already used throughout - safe because PDF
+// generation here is synchronous and never runs two documents concurrently.
+let MARGIN_X = DEFAULT_LAYOUT_SETTINGS.paddingX;
+let MARGIN_TOP = DEFAULT_LAYOUT_SETTINGS.paddingTop;
+let MARGIN_BOTTOM = DEFAULT_LAYOUT_SETTINGS.paddingBottom;
+let CONTENT_W = A4_WIDTH_MM - MARGIN_X * 2;
+
+function applyLayoutMargins(layout: LayoutSettings): void {
+  MARGIN_X = layout.paddingX;
+  MARGIN_TOP = layout.paddingTop;
+  MARGIN_BOTTOM = layout.paddingBottom;
+  CONTENT_W = A4_WIDTH_MM - MARGIN_X * 2;
+}
+
 const PT_TO_MM = 0.352778;
 
 const FS_NAME = 23;
@@ -88,7 +103,7 @@ function drawCenteredInlineLine(
   if (!items.length) return;
   doc.setFont(font, "normal");
   doc.setFontSize(sizePt);
-  const sepText = "   |   ";
+  const sepText = " | ";
   const widths = items.map((item) => doc.getTextWidth(item.label));
   const sepWidth = doc.getTextWidth(sepText);
   const totalWidth = widths.reduce((a, b) => a + b, 0) + sepWidth * (items.length - 1);
@@ -149,14 +164,14 @@ function drawHeader(doc: jsPDF, cursor: Cursor, resume: Resume, templateId: stri
 
 function sectionTitle(doc: jsPDF, cursor: Cursor, label: string, colors: ReturnType<typeof getTemplateColorTokens>): void {
   ensureSpace(doc, cursor, lh(FS_SECTION, 1.2) + 8);
-  cursor.y += 3;
+  cursor.y += 2;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(FS_SECTION);
   doc.setTextColor(colors.accent);
   const charSpace = FS_SECTION * 0.16 * PT_TO_MM;
   const y = cursor.y + lh(FS_SECTION, 0.9);
   doc.text(label.toUpperCase(), MARGIN_X, y, { charSpace });
-  cursor.y = y + 0.3;
+  cursor.y = y + 0.1;
   doc.setDrawColor(colors.rule);
   doc.setLineWidth(0.35);
   doc.line(MARGIN_X, cursor.y, A4_WIDTH_MM - MARGIN_X, cursor.y);
@@ -173,13 +188,14 @@ function drawTokenRow(
   cursor: Cursor,
   label: string | null,
   items: SkillItem[],
-  colors: ReturnType<typeof getTemplateColorTokens>
+  colors: ReturnType<typeof getTemplateColorTokens>,
+  offsetX = 0
 ): void {
   const list = items.slice(0, MAX_ROW_SKILLS);
   if (!list.length && !label) return;
 
   doc.setFontSize(FS_SKILL);
-  let x = MARGIN_X;
+  let x = MARGIN_X + offsetX;
   const y = cursor.y + lh(FS_SKILL, 1.1);
   const maxWidth = A4_WIDTH_MM - MARGIN_X - x;
   const startX = x;
@@ -219,7 +235,7 @@ function drawTokenRow(
     cx += doc.getTextWidth(item.name);
   });
 
-  cursor.y = y + lh(FS_SKILL, 1.1) * 0.35;
+  cursor.y = y + lh(FS_SKILL, 1.1) * 0.22;
 }
 
 function measureBulletsHeight(doc: jsPDF, points: string[]): number {
@@ -297,7 +313,8 @@ function drawEntryTop(doc: jsPDF, cursor: Cursor, top: EntryTop, colors: ReturnT
 // - split out from downloadResumePdf so the layout logic itself can be
 // exercised directly (e.g. in a script/test that writes the bytes to a
 // file) without needing a browser to trigger a save.
-export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate): jsPDF {
+export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate, layout: LayoutSettings = DEFAULT_LAYOUT_SETTINGS): jsPDF {
+  applyLayoutMargins(layout);
   const colors = getTemplateColorTokens(template);
   const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
   const cursor: Cursor = { y: MARGIN_TOP };
@@ -305,7 +322,7 @@ export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate)
   drawHeader(doc, cursor, resume, template.id, colors);
 
   if (resume.summary?.trim()) {
-    sectionTitle(doc, cursor, "Summary", colors);
+    sectionTitle(doc, cursor, "Professional Summary", colors);
     doc.setFontSize(FS_BODY);
     const lineCount = measureWrappedLineCount(doc, resume.summary, CONTENT_W, "helvetica", FS_BODY);
     ensureSpace(doc, cursor, lineCount * lh(FS_BODY, 1.33));
@@ -320,101 +337,6 @@ export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate)
       lh(FS_BODY, 1.33)
     );
     cursor.y += h;
-  }
-
-  const skillEntries = Object.entries(resume.skills || {}).filter(([, items]) => items && items.length > 0);
-  if (skillEntries.length) {
-    sectionTitle(doc, cursor, "Skills", colors);
-    skillEntries.forEach(([category, items]) => {
-      ensureSpace(doc, cursor, lh(FS_SKILL, 1.1) + 1);
-      drawTokenRow(doc, cursor, category, items, colors);
-    });
-  }
-
-  if (resume.experience?.length) {
-    sectionTitle(doc, cursor, "Experience", colors);
-    resume.experience.forEach((exp) => {
-      const bulletsHeight = measureBulletsHeight(doc, exp.points || []);
-      const techLineHeight = exp.skillsUsed?.length ? lh(FS_META, 1.32) + 1 : 0;
-      const topHeight = lh(FS_ENTRY, 1.16) + (exp.role ? lh(FS_ROLE, 1.2) : 0);
-      ensureSpace(doc, cursor, topHeight + bulletsHeight + techLineHeight + 4);
-
-      drawEntryTop(
-        doc,
-        cursor,
-        { heading: exp.companyName, meta: exp.duration, role: exp.role, location: exp.location },
-        colors
-      );
-      drawBullets(doc, cursor, exp.points || [], colors);
-      if (exp.skillsUsed?.length) {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(FS_META);
-        doc.setTextColor(colors.muted);
-        const labelText = "Tech Stack:  ";
-        doc.text(labelText, MARGIN_X, cursor.y + lh(FS_META, 1.1));
-        const labelWidth = doc.getTextWidth(labelText);
-        drawTokenRowInline(doc, cursor, exp.skillsUsed, colors, labelWidth);
-      }
-      cursor.y += 4;
-    });
-  }
-
-  if (resume.projects?.length) {
-    sectionTitle(doc, cursor, "Projects", colors);
-    resume.projects.forEach((proj) => {
-      const [main, secondary] = (proj.name || "").split("—");
-      const mainText = (main || "").trim();
-      const secondaryText = secondary ? secondary.trim() : "";
-      const aboutLines = measureWrappedLineCount(doc, proj.about || "", CONTENT_W, "helvetica", FS_BODY);
-      const aboutHeight = aboutLines * lh(FS_BODY, 1.33);
-      const techLineHeight = proj.techStack?.length ? lh(FS_META, 1.32) + 1 : 0;
-      const linksText = (proj.links || []).map((l) => l.label).join("   |   ");
-      ensureSpace(doc, cursor, lh(FS_ENTRY, 1.16) + aboutHeight + techLineHeight + 4);
-
-      doc.setFont("times", "bold");
-      doc.setFontSize(FS_ENTRY);
-      doc.setTextColor(colors.ink);
-      const y1 = cursor.y + lh(FS_ENTRY, 1.16);
-      doc.text(mainText, MARGIN_X, y1);
-      if (secondaryText) {
-        const mainWidth = doc.getTextWidth(mainText);
-        doc.setFont("times", "normal");
-        doc.setFontSize(FS_ENTRY * 0.89);
-        doc.setTextColor(colors.faint);
-        doc.text(`: ${secondaryText}`, MARGIN_X + mainWidth + 1.2, y1);
-        doc.setFont("times", "bold");
-        doc.setFontSize(FS_ENTRY);
-        doc.setTextColor(colors.ink);
-      }
-      if (proj.links?.length) {
-        doc.setFont("courier", "normal");
-        doc.setFontSize(FS_META);
-        doc.setTextColor(colors.accent);
-        if (proj.links.length === 1) {
-          doc.textWithLink(proj.links[0].label, A4_WIDTH_MM - MARGIN_X, y1, { url: proj.links[0].url, align: "right" });
-        } else {
-          doc.text(linksText, A4_WIDTH_MM - MARGIN_X, y1, { align: "right" });
-        }
-      }
-      cursor.y = y1 + lh(FS_ENTRY, 1.16) * 0.3;
-
-      const h = drawWrappedRichText(
-        doc,
-        proj.about || "",
-        MARGIN_X,
-        cursor.y + lh(FS_BODY, 1.33) * 0.8,
-        CONTENT_W,
-        "helvetica",
-        { normal: "#25282f", bold: colors.accent },
-        lh(FS_BODY, 1.33)
-      );
-      cursor.y += h;
-
-      if (proj.techStack?.length) {
-        drawTokenRow(doc, cursor, null, proj.techStack, colors);
-      }
-      cursor.y += 4;
-    });
   }
 
   if (resume.education?.length) {
@@ -473,11 +395,112 @@ export function buildResumePdfDocument(resume: Resume, template: ResumeTemplate)
     });
   }
 
+  if (resume.experience?.length) {
+    sectionTitle(doc, cursor, "Work Experience", colors);
+    resume.experience.forEach((exp) => {
+      const bulletsHeight = measureBulletsHeight(doc, exp.points || []);
+      const techLineHeight = exp.skillsUsed?.length ? lh(FS_META, 1.32) + 1 : 0;
+      const topHeight = lh(FS_ENTRY, 1.16) + (exp.role ? lh(FS_ROLE, 1.2) : 0);
+      ensureSpace(doc, cursor, topHeight + bulletsHeight + techLineHeight + 4);
+
+      drawEntryTop(
+        doc,
+        cursor,
+        { heading: exp.companyName, meta: exp.duration, role: exp.role, location: exp.location },
+        colors
+      );
+      drawBullets(doc, cursor, exp.points || [], colors);
+      if (exp.skillsUsed?.length) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(FS_META);
+        doc.setTextColor(colors.muted);
+        const labelText = "Tech Stack:  ";
+        doc.text(labelText, MARGIN_X, cursor.y + lh(FS_META, 1.1));
+        const labelWidth = doc.getTextWidth(labelText);
+        drawTokenRowInline(doc, cursor, exp.skillsUsed, colors, labelWidth);
+      }
+      cursor.y += 4;
+    });
+  }
+
+  if (resume.projects?.length) {
+    sectionTitle(doc, cursor, "Projects", colors);
+    resume.projects.forEach((proj) => {
+      const [main, secondary] = (proj.name || "").split("—");
+      const mainText = (main || "").trim();
+      const secondaryText = secondary ? secondary.trim() : "";
+      const bulletsHeight = measureBulletsHeight(doc, proj.points || []);
+      const techLineHeight = proj.techStack?.length ? lh(FS_META, 1.32) + 1 : 0;
+      const linksText = (proj.links || []).map((l) => l.label).join("   |   ");
+      ensureSpace(doc, cursor, lh(FS_ENTRY, 1.16) + bulletsHeight + techLineHeight + 4);
+
+      doc.setFont("times", "bold");
+      doc.setFontSize(FS_ENTRY);
+      doc.setTextColor(colors.ink);
+      const y1 = cursor.y + lh(FS_ENTRY, 1.16);
+      doc.text(mainText, MARGIN_X, y1);
+      if (secondaryText) {
+        const mainWidth = doc.getTextWidth(mainText);
+        doc.setFont("times", "normal");
+        doc.setFontSize(FS_ENTRY * 0.89);
+        doc.setTextColor(colors.muted);
+        doc.text(`: ${secondaryText}`, MARGIN_X + mainWidth + 1.2, y1);
+        doc.setFont("times", "bold");
+        doc.setFontSize(FS_ENTRY);
+        doc.setTextColor(colors.ink);
+      }
+      if (proj.links?.length) {
+        doc.setFont("courier", "normal");
+        doc.setFontSize(FS_META);
+        doc.setTextColor(colors.accent);
+        if (proj.links.length === 1) {
+          doc.textWithLink(proj.links[0].label, A4_WIDTH_MM - MARGIN_X, y1, { url: proj.links[0].url, align: "right" });
+        } else {
+          doc.text(linksText, A4_WIDTH_MM - MARGIN_X, y1, { align: "right" });
+        }
+      }
+      cursor.y = y1 + lh(FS_ENTRY, 1.16) * 0.3;
+
+      if (proj.techStack?.length) {
+        // Indented to line up with the bullet text start below (BULLET_INDENT),
+        // not the project title/dots above it - mirrors the CSS rule
+        // `.rt-project-top + .rt-tech-line { padding-left: 12px; }` in render.ts.
+        drawTokenRow(doc, cursor, null, proj.techStack, colors, BULLET_INDENT);
+      }
+
+      drawBullets(doc, cursor, proj.points || [], colors);
+
+      cursor.y += 4;
+    });
+  }
+
+  const skillEntries = Object.entries(resume.skills || {}).filter(([, items]) => items && items.length > 0);
+  if (skillEntries.length) {
+    sectionTitle(doc, cursor, "Technical Skills", colors);
+    skillEntries.forEach(([category, items]) => {
+      ensureSpace(doc, cursor, lh(FS_SKILL, 1.1) + 1);
+      drawTokenRow(doc, cursor, category, items, colors);
+    });
+  }
+
+  if (resume.extraCurricular?.length) {
+    sectionTitle(doc, cursor, "Extra Curricular", colors);
+    const bulletsHeight = measureBulletsHeight(doc, resume.extraCurricular);
+    ensureSpace(doc, cursor, bulletsHeight + 4);
+    drawBullets(doc, cursor, resume.extraCurricular, colors);
+    cursor.y += 4;
+  }
+
   return doc;
 }
 
-export async function downloadResumePdf(resume: Resume, template: ResumeTemplate, filename: string): Promise<void> {
-  const doc = buildResumePdfDocument(resume, template);
+export async function downloadResumePdf(
+  resume: Resume,
+  template: ResumeTemplate,
+  filename: string,
+  layout: LayoutSettings = DEFAULT_LAYOUT_SETTINGS
+): Promise<void> {
+  const doc = buildResumePdfDocument(resume, template, layout);
   doc.save(filename);
 }
 

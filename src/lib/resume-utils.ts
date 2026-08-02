@@ -1,5 +1,5 @@
 import { clone, sanitizeSkillList } from "./utils";
-import { ROLE_CATEGORY_ORDER } from "./constants";
+import { ROLE_SKILL_LAYOUTS } from "./constants";
 import type {
   ExperienceSelection,
   ProjectSelection,
@@ -70,23 +70,45 @@ export function backfillMissingSkillCategories(resume: Resume, seedSkills: Recor
   return { resume: { ...resume, skills: nextSkills }, changed: true };
 }
 
-// Replaces resume.skills with just the categories the chosen role includes,
-// in that role's order. Falls back to the full master skill set when
-// roleType is empty/unknown.
-export function buildRoleScopedResume(resume: Resume, roleType: string): Resume {
-  const order = ROLE_CATEGORY_ORDER[roleType];
-  if (!order) {
-    return clone(resume);
-  }
-  const next = clone(resume);
-  const masterSkills = resume.skills || {};
-  const scopedSkills: Record<string, SkillItem[]> = {};
-  for (const category of order) {
-    if (masterSkills[category]?.length) {
-      scopedSkills[category] = clone(masterSkills[category]);
+// Index of every master skill by lowercased name, used below to carry over
+// an existing bold flag when a role layout references a skill the person
+// has already bolded in the master list - otherwise every role-scoped skill
+// would reset to unbolded on every switch.
+function flattenSkillsByName(skills: Record<string, SkillItem[]> = {}): Map<string, SkillItem> {
+  const map = new Map<string, SkillItem>();
+  for (const items of Object.values(skills)) {
+    for (const item of items || []) {
+      map.set(item.name.toLowerCase(), item);
     }
   }
-  next.skills = Object.keys(scopedSkills).length ? scopedSkills : clone(masterSkills);
+  return map;
+}
+
+// Replaces resume.skills with the chosen role's fully curated category set
+// (see ROLE_SKILL_LAYOUTS) - self-contained literal skill lists per role,
+// not filtered/merged from the master pool, since each role tells its own
+// story and the same skill can legitimately appear in several different
+// roles' lists. No pre-trimming happens here - the whole point is to hand
+// the model the complete candidate pool per category at generate() time and
+// let it pick the best 5-6 based on the job description (see prompt.ts).
+// Falls back to the untouched master skill set for any roleType without an
+// explicit layout.
+export function buildRoleScopedResume(resume: Resume, roleType: string): Resume {
+  const next = clone(resume);
+  const layout = ROLE_SKILL_LAYOUTS[roleType];
+  if (!layout) {
+    return next;
+  }
+
+  const masterIndex = flattenSkillsByName(resume.skills);
+  const scopedSkills: Record<string, SkillItem[]> = {};
+  for (const category of layout) {
+    scopedSkills[category.label] = category.skills.map((name) => ({
+      name,
+      bold: Boolean(masterIndex.get(name.toLowerCase())?.bold)
+    }));
+  }
+  next.skills = scopedSkills;
   return next;
 }
 
@@ -104,10 +126,17 @@ function withSkillArray(items: SkillItem[] = []) {
 // display limit, the model could only ever pick from an arbitrary early
 // slice of a category and would never even see a JD-relevant skill sitting
 // further down the list. 30 comfortably covers every built-in category
-// (the largest, "AI & GenAI", has 25) so the model genuinely sees
-// everything real it could choose from.
+// (the largest, "Backend Development", has under 20) so the model
+// genuinely sees everything real it could choose from.
 const MAX_CANDIDATE_SKILLS_PER_ARRAY = 30;
 
+// Bullet text (experience/project points) is deliberately never sent to the
+// model - bullets are never rewritten (see prompt.ts / normalizeSuggestions,
+// which now hard-forces suggested === current for every bullet), so shipping
+// that text to the model would just be wasted tokens for output that's
+// thrown away anyway. Only what the model actually acts on goes out: the
+// summary, the full skills candidate pool, and each entry's small curated
+// skillsUsed/techStack list (for bolding JD matches).
 export function getMutableResumePayload(resume: Resume) {
   return {
     summary: withLength(resume.summary),
@@ -120,12 +149,10 @@ export function getMutableResumePayload(resume: Resume) {
     experience: (resume.experience || []).map((item) => ({
       companyName: item.companyName,
       role: item.role,
-      points: (item.points || []).map((point) => withLength(point)),
       skillsUsed: withSkillArray(item.skillsUsed || []).slice(0, MAX_CANDIDATE_SKILLS_PER_ARRAY)
     })),
     projects: (resume.projects || []).map((item) => ({
       name: item.name,
-      about: withLength(item.about),
       techStack: withSkillArray(item.techStack || []).slice(0, MAX_CANDIDATE_SKILLS_PER_ARRAY)
     }))
   };
@@ -216,12 +243,11 @@ function normalizeRawModelOutput(raw: any, resume: Resume) {
       reason: raw.summary?.reason || ""
     },
     skills,
+    // Bullet points are never requested from or applied from the model
+    // anymore (see getMutableResumePayload / normalizeSuggestions) - only
+    // skillsUsed/techStack are parsed out of each entry here.
     experience: (raw.experience || []).map((entry: any) => ({
       companyName: entry.companyName,
-      points: (entry.points || []).map((point: any) => ({
-        suggested: extractSuggestedText(point),
-        reason: point?.reason || ""
-      })),
       skillsUsed: {
         suggested: extractSkillArray(entry.skillsUsed?.suggested ?? entry.skillsUsed),
         reason: entry.skillsUsed?.reason || ""
@@ -229,10 +255,6 @@ function normalizeRawModelOutput(raw: any, resume: Resume) {
     })),
     projects: (raw.projects || []).map((project: any) => ({
       name: project.name,
-      about: {
-        suggested: extractSuggestedText(project.about),
-        reason: project.about?.reason || ""
-      },
       techStack: {
         suggested: extractSkillArray(project.techStack?.suggested ?? project.techStack),
         reason: project.techStack?.reason || ""
@@ -281,18 +303,17 @@ export function normalizeSuggestions(
       }),
     experience: (resume.experience || []).map((item) => {
       const match = (normalized.experience || []).find((entry: any) => entry.companyName === item.companyName) || {};
-      const pointMatches = Array.isArray(match.points) ? match.points : [];
       return {
         companyName: item.companyName,
         role: item.role,
-        points: (item.points || []).map((point, index) => {
-          const pointMatch = pointMatches[index] || pointMatches.find((entry: any) => entry.current === point) || {};
-          return {
-            current: point,
-            suggested: clampToLength(pointMatch.suggested || point, point),
-            reason: pointMatch.reason || ""
-          };
-        }),
+        // Experience bullets are never rewritten by the model (see prompt.ts) -
+        // suggested is forced to equal current here too, as a hard guarantee
+        // that holds even if a model ignores that instruction.
+        points: (item.points || []).map((point) => ({
+          current: point,
+          suggested: point,
+          reason: ""
+        })),
         skillsUsed: {
           current: clone((item.skillsUsed || []).slice(0, MAX_VISIBLE_SKILLS)),
           suggested: suggestedSkillList(match.skillsUsed?.suggested || item.skillsUsed || [], item.skillsUsed || []),
@@ -304,11 +325,14 @@ export function normalizeSuggestions(
       const match = (normalized.projects || []).find((entry: any) => entry.name === item.name) || {};
       return {
         name: item.name,
-        about: {
-          current: item.about || "",
-          suggested: clampToLength(match.about?.suggested || item.about || "", item.about || ""),
-          reason: match.about?.reason || ""
-        },
+        // Project bullets are never rewritten by the model (see prompt.ts) -
+        // suggested is forced to equal current here too, as a hard guarantee
+        // that holds even if a model ignores that instruction.
+        points: (item.points || []).map((point) => ({
+          current: point,
+          suggested: point,
+          reason: ""
+        })),
         techStack: {
           current: clone((item.techStack || []).slice(0, MAX_VISIBLE_SKILLS)),
           suggested: suggestedSkillList(match.techStack?.suggested || item.techStack || [], item.techStack || []),
@@ -339,10 +363,10 @@ export function createDefaultReviewSelections(suggestions: Suggestions): ReviewS
     };
   });
 
-  (suggestions.projects || []).forEach((_project, projectIndex) => {
+  (suggestions.projects || []).forEach((project, projectIndex) => {
     selections.projects[projectIndex] = {
       all: "pending",
-      about: "pending",
+      points: project.points.map(() => "pending"),
       techStack: "pending"
     };
   });
@@ -378,7 +402,7 @@ export function setSectionSelection(
   if (section === "projects") {
     for (const entry of Object.values(next.projects) as ProjectSelection[]) {
       entry.all = value;
-      entry.about = value;
+      entry.points = entry.points.map(() => value);
       entry.techStack = value;
     }
   }
@@ -418,9 +442,11 @@ export function applyAcceptedChanges(baseResume: Resume, suggestions: Suggestion
     if (!state) {
       return;
     }
-    if (state.about === "accepted") {
-      next.projects[projectIndex].about = project.about.suggested;
-    }
+    project.points.forEach((point, pointIndex) => {
+      if (state.points?.[pointIndex] === "accepted") {
+        next.projects[projectIndex].points[pointIndex] = point.suggested;
+      }
+    });
     if (state.techStack === "accepted") {
       next.projects[projectIndex].techStack = clone(project.techStack.suggested);
     }

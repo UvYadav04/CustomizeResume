@@ -10,24 +10,26 @@ export const DEFAULT_RESUME_HTML = `<main class="rt-page">
   </header>
 
   <section class="rt-section">
-    <h2 class="rt-section-title">Summary</h2>
+    <h2 class="rt-section-title">Professional Summary</h2>
     <p class="rt-summary">{{{summary}}}</p>
   </section>
 
   <section class="rt-section">
-    <h2 class="rt-section-title">Skills</h2>
-    <div class="rt-skills">
-      {{#each skillCategories}}
-      <div class="rt-skill-row">
-        <span class="rt-skill-label">{{category}}:</span>
-        <span class="rt-token-wrap">{{#each items}}<span class="rt-token{{#if bold}} is-bold{{/if}}">{{name}}</span>{{/each}}</span>
+    <h2 class="rt-section-title">Education</h2>
+    {{#each education}}
+    <article class="rt-entry">
+      <div class="rt-edu-top">
+        <h3 class="rt-edu-inst">{{institution}}</h3>
+        <div class="rt-entry-meta">{{duration}}</div>
       </div>
-      {{/each}}
-    </div>
+      <p class="rt-edu-degree">{{degree}}{{#if hasScore}}&nbsp;&middot;&nbsp;<span class="rt-edu-score">{{score}}</span>{{/if}}</p>
+      {{#if hasCoursework}}<p class="rt-coursework"><strong>Relevant Coursework&nbsp;&nbsp;</strong>{{courseworkJoined}}</p>{{/if}}
+    </article>
+    {{/each}}
   </section>
 
   <section class="rt-section">
-    <h2 class="rt-section-title">Experience</h2>
+    <h2 class="rt-section-title">Work Experience</h2>
     {{#each experience}}
     <article class="rt-entry">
       <div class="rt-entry-top">
@@ -54,23 +56,32 @@ export const DEFAULT_RESUME_HTML = `<main class="rt-page">
         <h3 class="rt-project-name">{{nameMain}}{{#if hasSecondaryName}} <span class="rt-project-secondary">: {{nameSecondary}}</span>{{/if}}</h3>
         {{#if hasLinks}}<div class="rt-project-links">{{&linksHtml}}</div>{{/if}}
       </div>
-      <p class="rt-project-about">{{{about}}}</p>
       {{#if hasTechStack}}<p class="rt-tech-line">{{#each techStack}}<span class="rt-token{{#if bold}} is-bold{{/if}}">{{name}}</span>{{/each}}</p>{{/if}}
+      <ul class="rt-entry-bullets">
+        {{#each points}}<li>{{{text}}}</li>{{/each}}
+      </ul>
     </article>
     {{/each}}
   </section>
 
   <section class="rt-section">
-    <h2 class="rt-section-title">Education</h2>
-    {{#each education}}
-    <article class="rt-entry">
-      <div class="rt-edu-top">
-        <h3 class="rt-edu-inst">{{institution}}</h3>
-        <div class="rt-entry-meta">{{duration}}</div>
+    <h2 class="rt-section-title">Technical Skills</h2>
+    <div class="rt-skills">
+      {{#each skillCategories}}
+      <div class="rt-skill-row">
+        <span class="rt-skill-label">{{category}}:</span>
+        <span class="rt-token-wrap">{{#each items}}<span class="rt-token{{#if bold}} is-bold{{/if}}">{{name}}</span>{{/each}}</span>
       </div>
-      <p class="rt-edu-degree">{{degree}}{{#if hasScore}}&nbsp;&middot;&nbsp;<span class="rt-edu-score">{{score}}</span>{{/if}}</p>
-      {{#if hasCoursework}}<p class="rt-coursework"><strong>Relevant Coursework&nbsp;&nbsp;</strong>{{courseworkJoined}}</p>{{/if}}
-    </article>
-    {{/each}}
+      {{/each}}
+    </div>
   </section>
+
+  {{#if hasExtraCurricular}}
+  <section class="rt-section">
+    <h2 class="rt-section-title">Extra Curricular</h2>
+    <ul class="rt-entry-bullets">
+      {{#each extraCurricular}}<li>{{{text}}}</li>{{/each}}
+    </ul>
+  </section>
+  {{/if}}
 </main>`;

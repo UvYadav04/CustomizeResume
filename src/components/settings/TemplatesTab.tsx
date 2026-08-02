@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useAppStore } from "@/store/useAppStore";
 import { getTemplates } from "@/lib/templates";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { clone } from "@/lib/utils";
 import { Save } from "lucide-react";
-import type { Settings } from "@/lib/types";
+import type { LayoutSettings, Settings } from "@/lib/types";
 
 // The default-template picker is part of the same draft/Save-changes flow
 // as Providers/Summary/Skills (see SettingsDialog.tsx) - it reads/writes
@@ -64,6 +65,10 @@ export function TemplatesTab({
     toast.success(`${activeTemplate.label} reset to default.`);
   }
 
+  function updateLayout(patch: Partial<LayoutSettings>) {
+    onSettingsChange({ ...clone(settings), layout: { ...settings.layout, ...patch } });
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
@@ -84,6 +89,48 @@ export function TemplatesTab({
         <p className="text-[11px] text-muted-foreground">
           "Auto" picks the AI Engineer template for AI-audience roles and the Software Engineer template for SDE-audience
           roles.
+        </p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label>Page spacing</Label>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-1">
+            <span className="text-[11px] text-muted-foreground">Top (mm)</span>
+            <Input
+              type="number"
+              min={0}
+              max={20}
+              step={0.5}
+              value={settings.layout.paddingTop}
+              onChange={(e) => updateLayout({ paddingTop: Number(e.target.value) })}
+            />
+          </div>
+          <div className="space-y-1">
+            <span className="text-[11px] text-muted-foreground">Left / Right (mm)</span>
+            <Input
+              type="number"
+              min={5}
+              max={25}
+              step={0.5}
+              value={settings.layout.paddingX}
+              onChange={(e) => updateLayout({ paddingX: Number(e.target.value) })}
+            />
+          </div>
+          <div className="space-y-1">
+            <span className="text-[11px] text-muted-foreground">Bottom (mm)</span>
+            <Input
+              type="number"
+              min={0}
+              max={25}
+              step={0.5}
+              value={settings.layout.paddingBottom}
+              onChange={(e) => updateLayout({ paddingBottom: Number(e.target.value) })}
+            />
+          </div>
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          Controls page margins for both the preview/print output and the downloaded PDF. Applies once saved.
         </p>
       </div>
 

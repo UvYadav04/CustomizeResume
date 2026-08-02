@@ -63,19 +63,24 @@ export function renderResumeHtml(resume: Resume): string {
       </section>
 
       <section class="rt-section">
-        <h2 class="rt-section-title">Skills</h2>
-        <div class="rt-skills">
-          ${Object.entries(resume.skills || {})
-            .map(
-              ([label, items]) => `
-            <div class="rt-skill-row">
-              <span class="rt-skill-label">${escapeHtml(label)}:</span>
-              <span class="rt-token-wrap">${renderTokenList(items)}</span>
+        <h2 class="rt-section-title">Education</h2>
+        ${(resume.education || [])
+          .map(
+            (item) => `
+          <article class="rt-entry">
+            <div class="rt-edu-top">
+              <h3 class="rt-edu-inst">${escapeHtml(item.institution || "")}</h3>
+              <div class="rt-entry-meta">${escapeHtml(item.duration || "")}</div>
             </div>
-          `
-            )
-            .join("")}
-        </div>
+            <p class="rt-edu-degree">
+              ${escapeHtml(item.degree || "")}
+              ${item.score ? `&nbsp;·&nbsp;<span class="rt-edu-score">${escapeHtml(item.score)}</span>` : ""}
+            </p>
+            ${(item.coursework || []).length ? `<p class="rt-coursework"><strong>Relevant Coursework&nbsp;&nbsp;</strong>${escapeHtml((item.coursework || []).join(", "))}</p>` : ""}
+          </article>
+        `
+          )
+          .join("")}
       </section>
 
       <section class="rt-section">
@@ -111,12 +116,14 @@ export function renderResumeHtml(resume: Resume): string {
             <div class="rt-project-top">
               <h3 class="rt-project-name">
                 ${escapeHtml(item.name.split("—")[0].trim() || "")}
-                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-faint); font-weight:normal; margin-left:0.1em;">: ${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
+                ${item.name.includes("—") ? `<span class="rt-project-secondary" style="font-size:0.89em; color:var(--rt-muted); font-weight:normal; margin-left:0.1em;">: ${escapeHtml(item.name.split("—")[1].trim())}</span>` : ""}
               </h3>
               <div class="rt-project-links">${renderLinks(item.links || [])}</div>
             </div>
-            <p class="rt-project-about">${formatTextWithBoldMarkers(item.about || "")}</p>
             ${item.techStack?.length ? `<p class="rt-tech-line">${renderTokenList(item.techStack)}</p>` : ""}
+            <ul class="rt-entry-bullets">
+              ${(item.points || []).map((point) => `<li>${formatTextWithBoldMarkers(point)}</li>`).join("")}
+            </ul>
           </article>
         `
           )
@@ -124,25 +131,21 @@ export function renderResumeHtml(resume: Resume): string {
       </section>
 
       <section class="rt-section">
-        <h2 class="rt-section-title">Education</h2>
-        ${(resume.education || [])
-          .map(
-            (item) => `
-          <article class="rt-entry">
-            <div class="rt-edu-top">
-              <h3 class="rt-edu-inst">${escapeHtml(item.institution || "")}</h3>
-              <div class="rt-entry-meta">${escapeHtml(item.duration || "")}</div>
+        <h2 class="rt-section-title">Skills</h2>
+        <div class="rt-skills">
+          ${Object.entries(resume.skills || {})
+            .map(
+              ([label, items]) => `
+            <div class="rt-skill-row">
+              <span class="rt-skill-label">${escapeHtml(label)}:</span>
+              <span class="rt-token-wrap">${renderTokenList(items)}</span>
             </div>
-            <p class="rt-edu-degree">
-              ${escapeHtml(item.degree || "")}
-              ${item.score ? `&nbsp;·&nbsp;<span class="rt-edu-score">${escapeHtml(item.score)}</span>` : ""}
-            </p>
-            ${(item.coursework || []).length ? `<p class="rt-coursework"><strong>Relevant Coursework&nbsp;&nbsp;</strong>${escapeHtml((item.coursework || []).join(", "))}</p>` : ""}
-          </article>
-        `
-          )
-          .join("")}
+          `
+            )
+            .join("")}
+        </div>
       </section>
+
     </main>
   `;
 }
@@ -167,10 +170,12 @@ html, body {
   width: var(--rt-page-width);
   min-height: var(--rt-page-height);
   margin: 0px auto;
-  /* Top padding trimmed down (was 9mm) - with the header rule removed below,
-     the old top padding left a noticeably large gap before the name even
-     started. */
-  padding: 5mm 13mm 8mm;
+  /* Driven by settings.layout (Settings > Templates > Page spacing) via the
+     --rt-pad-* custom properties - see buildLayoutOverrideCss() in
+     templates/index.ts, which appends the actual values after this
+     stylesheet so they win the cascade. The mm values in the token blocks
+     are just a fallback if that override is ever missing. */
+  padding: var(--rt-pad-top) var(--rt-pad-x) var(--rt-pad-bottom);
   background: var(--rt-page);
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
 }
@@ -192,18 +197,20 @@ html, body {
   font-family: var(--rt-mono);
   font-size: 8.8pt;
   line-height: 1.35;
+  white-space: nowrap;
 }
 .rt-contact + .rt-contact { margin-top: 1px; }
 .rt-contact a { color: var(--rt-muted); text-decoration: none; }
 .rt-contact a, .rt-contact > span { white-space: nowrap; }
-.rt-contact-sep { color: var(--rt-faint); margin: 0 6px; white-space: nowrap; }
+.rt-contact-sep { color: var(--rt-faint); margin: 0 3px; white-space: nowrap; }
 
-.rt-section { margin-top: 9px; }
+.rt-section { margin-top: 7px; }
 
 
 .rt-section-title {
   margin: 0 0 2px;
-  padding-bottom: 0.5px;
+  padding-bottom: 0;
+  line-height: 1;
   border-bottom: 1.5px solid var(--rt-rule);
   color: var(--rt-accent);
   font-family: var(--rt-sans);
@@ -213,13 +220,13 @@ html, body {
   text-transform: uppercase;
 }
 
-.rt-summary, .rt-entry-bullets li, .rt-project-about, .rt-edu-degree {
+.rt-summary, .rt-entry-bullets li, .rt-edu-degree {
   color: #25282f;
   font-family: var(--rt-sans);
   font-size: var(--rt-fs-body);
   line-height: 1.33;
 }
-.rt-summary, .rt-project-about, .rt-edu-degree, .rt-coursework { margin: 0; }
+.rt-summary, .rt-edu-degree, .rt-coursework { margin: 0; }
 
 .rt-skills { display: flex; flex-direction: column; }
 
@@ -228,7 +235,7 @@ html, body {
   align-items: baseline;
   flex-wrap: nowrap;
   gap: 2px 4px;
-  padding: 2px 0;
+  padding: 1.2px 0;
   color: var(--rt-muted);
   font-size: var(--rt-fs-skill);
   line-height: 1.36;
@@ -265,7 +272,7 @@ html, body {
 }
 
 .rt-project-secondary {
-  color: var(--rt-faint);
+  color: var(--rt-muted);
   font-weight: 400;
   font-size: 0.89em;
   margin-left: 0em;
@@ -297,10 +304,14 @@ html, body {
 .rt-tech-line { margin-top: 2px; color: var(--rt-faint); font-size: var(--rt-fs-meta); line-height: 1.32; }
 .rt-tech-label { color: var(--rt-muted); font-weight: 500; }
 
+/* Project tech-line renders above the bullets (see defaultContent.ts) -
+   indent it to line up with the bullet text start (.rt-entry-bullets li's
+   padding-left: 12px), not the bullet dots/heading above it. */
+.rt-project-top + .rt-tech-line { padding-left: 12px; }
+
 .rt-project-links { display: flex; gap: 5px; white-space: nowrap; }
 .rt-project-links a { color: var(--rt-accent); text-decoration: none; }
 
-.rt-project-about { margin-top: 2px; }
 .rt-edu-degree { margin-top: 2px; }
 .rt-edu-score { color: var(--rt-accent); font-weight: 600; }
 .rt-coursework { margin-top: 2px; }
