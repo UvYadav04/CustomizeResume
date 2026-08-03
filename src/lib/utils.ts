@@ -62,10 +62,21 @@ export function parseSkillWhitelist(value: string[] | string = []): string[] {
 export function sanitizeSkillList(
   suggestedList: SkillItem[] = [],
   currentList: SkillItem[] = [],
-  options: { maxItems?: number } = {}
+  options: { maxItems?: number; pad?: boolean } = {}
 ): SkillItem[] {
   const currentMap = toSkillNameMap(currentList);
   const maxItems = Number(options.maxItems || 0);
+  // Padding (topping the list back up to maxItems with leftover, unpicked
+  // items from currentList) is only correct for an already-small, curated
+  // list where "keep essentially all of it" is the goal (experience
+  // skillsUsed / project techStack). For the master Skills section, where
+  // the model is deliberately narrowing a large 20-30 item candidate pool
+  // down to its best ~5-6, padding back up to maxItems with the very items
+  // the model rejected defeats that narrowing - it makes a correctly
+  // narrowed 4-5 item pick look, on screen, like the whole pool with a
+  // couple of items bolded. Defaults to true to preserve the skillsUsed/
+  // techStack "keep almost all" behavior at every other call site.
+  const pad = options.pad !== false;
   const used = new Set<string>();
   const sanitized: SkillItem[] = [];
 
@@ -82,6 +93,10 @@ export function sanitizeSkillList(
     if (maxItems && sanitized.length >= maxItems) {
       return sanitized;
     }
+  }
+
+  if (!pad) {
+    return sanitized;
   }
 
   for (const item of currentList) {

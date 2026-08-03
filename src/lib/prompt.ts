@@ -62,7 +62,7 @@ export function buildTailorPrompt(resume: Resume, jobDescription: JobDescription
   const system = `
 You are an expert resume tailoring assistant.
 
-Return ONLY valid JSON matching outputFormat.
+Return ONLY valid JSON matching outputFormat exactly - use the exact field names shown (e.g. "suggested", not a misspelling of it).
 
 General rules (apply to every section below):
 - Use only facts already present in the resume. Never invent employers, dates, metrics, projects, technologies, or achievements.

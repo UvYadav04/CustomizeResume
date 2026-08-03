@@ -161,7 +161,7 @@ export function getMutableResumePayload(resume: Resume) {
 function ensureNonEmptySkillList(
   suggested: SkillItem[],
   current: SkillItem[],
-  sanitizeOptions: { whitelist: string[]; maxItems: number }
+  sanitizeOptions: { whitelist: string[]; maxItems: number; pad?: boolean }
 ): SkillItem[] {
   const sanitized = sanitizeSkillList(suggested, current, sanitizeOptions);
   return sanitized.length ? sanitized : clone(current);
@@ -200,6 +200,17 @@ function extractSuggestedText(value: any, fallback = ""): string {
     if (typeof value.text === "string") {
       return value.text;
     }
+    // Models occasionally misspell the key (seen in the wild: "sugagested").
+    // Rather than silently falling back to the unchanged original text (which
+    // looks, from the review panel, like "nothing happened"), take the first
+    // remaining string-valued field that isn't "reason" - reliable in
+    // practice since outputFormat only ever has one text field plus "reason"
+    // per object.
+    for (const [key, entry] of Object.entries(value)) {
+      if (key !== "reason" && typeof entry === "string") {
+        return entry;
+      }
+    }
   }
   return fallback;
 }
@@ -213,6 +224,16 @@ function extractSkillArray(value: any): SkillItem[] {
   }
   if (value?.suggested && Array.isArray(value.suggested)) {
     return value.suggested;
+  }
+  // Same typo tolerance as extractSuggestedText - fall back to the first
+  // array-valued field on the object (e.g. a misspelled "suggested" key)
+  // instead of silently returning an empty list.
+  if (value && typeof value === "object") {
+    for (const entry of Object.values(value)) {
+      if (Array.isArray(entry)) {
+        return entry as SkillItem[];
+      }
+    }
   }
   return [];
 }
@@ -271,8 +292,15 @@ export function normalizeSuggestions(
   const normalized = normalizeRawModelOutput(raw, resume);
   const sanitizeOptions = { whitelist: options.skillWhitelist || [], maxItems: MAX_VISIBLE_SKILLS };
   const jdTextLower = String(options.jobDescriptionText || "").toLowerCase();
-  const suggestedSkillList = (suggested: SkillItem[], current: SkillItem[]) =>
-    applyKeywordBold(ensureNonEmptySkillList(suggested, current, sanitizeOptions), jdTextLower);
+  // `pad` distinguishes the two shapes of skill list in play here (see the
+  // comment on sanitizeSkillList in utils.ts): the master Skills section
+  // hands the model a large, intentionally untrimmed pool and wants a real
+  // narrowed-down pick with no top-up (pad: false), while an experience's
+  // skillsUsed / a project's techStack is already a small curated list
+  // where topping back up to MAX_VISIBLE_SKILLS from that same short list
+  // is exactly the desired "keep almost all of it" behavior (pad: true).
+  const suggestedSkillList = (suggested: SkillItem[], current: SkillItem[], pad = true) =>
+    applyKeywordBold(ensureNonEmptySkillList(suggested, current, { ...sanitizeOptions, pad }), jdTextLower);
 
   return {
     summary: {
@@ -297,7 +325,7 @@ export function normalizeSuggestions(
           // (which can hold 20+ items) made rows wildly inconsistent in
           // length and didn't match what the preview panel shows.
           current: clone(current.slice(0, MAX_VISIBLE_SKILLS)),
-          suggested: suggestedSkillList(match.suggested || current, current),
+          suggested: suggestedSkillList(match.suggested || current, current, false),
           reason: match.reason || ""
         };
       }),
