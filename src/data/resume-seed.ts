@@ -120,7 +120,7 @@ export const RESUME_SEED: Resume = {
     {
       companyName: "BC2RI",
       role: "Software Developer",
-      duration: "Jun 2026 - Sep 2026",
+      duration: "May 2026 - Aug 2026",
       location: "Remote",
       points: [
         "Owned end-to-end frontend development of the company's MVP using React, TypeScript, Redux, and RTK Query, delivering a scalable healthcare platform supporting providers, patients, and caregivers.",
