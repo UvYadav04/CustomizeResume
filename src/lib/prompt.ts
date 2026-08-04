@@ -46,7 +46,7 @@ export function buildTailorPrompt(resume: Resume, jobDescription: JobDescription
   // when no job title was entered, plus it still scopes which skill
   // categories - and which full, untrimmed candidate pool per category -
   // get sent (see ROLE_SKILL_LAYOUTS) and the audience instruction below.
-  const gittargetRoleCategory = jobDescription.title || ROLE_PRESETS.find((preset) => preset.id === jobDescription.roleType)?.label || "";
+  const targetRoleCategory = jobDescription.title || ROLE_PRESETS.find((preset) => preset.id === jobDescription.roleType)?.label || "";
 
   // Structured as one block per output section (summary, skills, experience,
   // projects) instead of one flat rules list - each section states its own
@@ -102,7 +102,7 @@ PROJECTS:
     ...(whitelist.length ? { userSkillWhitelist: whitelist, allowedSkills: allowedSkills.all } : {}),
     resume: mutableResume,
     outputFormat: {
-      summary: { sugagested: "string", reason: "string" },
+      summary: { suggested: "string", reason: "string" },
       skills: [{ category: "string", suggested: [{ name: "string", bold: false }], reason: "string" }],
       experience: [
         {
