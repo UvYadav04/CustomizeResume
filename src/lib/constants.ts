@@ -99,20 +99,15 @@ export function createDefaultJobDescription(): JobDescription {
   };
 }
 
-// Matches the exact union of category labels used across ROLE_SKILL_LAYOUTS
-// below (see resume-seed.ts's skills block, which now uses these same 10
-// labels as its keys) - just controls display order in Settings > Skills.
 export const SKILL_CATEGORY_ORDER = [
   "Languages",
   "AI Engineering",
-  "Generative AI",
-  "Frontend Development",
-  "Frontend Engineering",
   "Backend Development",
-  "Backend Engineering",
   "Databases",
-  "AI Infrastructure, Cloud & Observability",
-  "Cloud, DevOps & Observability"
+  "Frontend Development",
+  "Distributed Systems",
+  "Cloud & Infrastructure",
+  "Observability"
 ];
 
 export interface RolePreset {
@@ -136,41 +131,32 @@ export interface RoleSkillCategory {
 
 
 export const ROLE_SKILL_LAYOUTS: Record<string, RoleSkillCategory[]> = {
-  // Identity: production AI engineer who understands LLM internals and
-  // builds AI systems. Story: AI -> AI Theory -> Backend -> Production AI.
   "ai-engineer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Vector Databases", "Embeddings", "Reranking"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Vector Databases"] },
     { label: "Generative AI", skills: ["LLMs", "Fine-Tuning", "LoRA", "QLoRA", "Ollama", "ONNX Runtime"] },
-    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "ARQ", "Pydantic"] },
+    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma"] },
     { label: "AI Infrastructure, Cloud & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "Langfuse", "Prometheus", "Grafana", "Loki"] }
   ],
-  // Identity: builds complete AI-powered applications from frontend to
-  // backend. Story: AI -> Frontend -> Backend -> Production.
   "fullstack-ai-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering", "Embeddings", "Reranking"] },
-    { label: "Frontend Development", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "HTML5", "CSS3", "Tailwind CSS", "Zod", "Server-Side Rendering"] },
-    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "WebAuthn", "ARQ", "Pydantic"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering"] },
+    { label: "Frontend Development", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "HTML5", "CSS3", "Tailwind CSS"] },
+    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "WebAuthn"] },
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "GitHub", "GitLab", "Langfuse", "Prometheus", "Grafana", "Loki"] }
   ],
-  // Identity: strong software engineer with practical GenAI experience.
-  // Story: Frontend -> Backend -> GenAI -> Production.
   "software-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "Frontend Engineering", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "TanStack Query", "HTML5", "CSS3", "ShadCN UI", "Zod", "Server-Side Rendering"] },
-    { label: "Backend Engineering", skills: ["Node.js", "Express.js", "FastAPI", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "MongoDB", "MySQL", "PostgreSQL", "Redis", "Prisma", "ARQ", "Pydantic"] },
-    { label: "Generative AI", skills: ["LLMs", "Multi-Agent Systems", "RAG", "LangChain", "LangGraph", "Context Engineering", "AutoGen", "Prompt Engineering", "Embeddings", "Reranking"] },
+    { label: "Frontend Engineering", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "TanStack Query", "HTML5", "CSS3", "ShadCN UI"] },
+    { label: "Backend Engineering", skills: ["Node.js", "Express.js", "FastAPI", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "MongoDB", "MySQL", "PostgreSQL", "Redis", "Prisma"] },
+    { label: "Generative AI", skills: ["LLMs", "Multi-Agent Systems", "RAG", "LangChain", "LangGraph", "Context Engineering", "AutoGen", "Prompt Engineering"] },
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "GitHub", "GitLab", "CI/CD", "Prometheus", "Grafana", "Loki", "Langfuse", "OpenTelemetry"] }
   ],
-  // Identity: backend engineer focused on APIs, databases, distributed
-  // systems, and production infrastructure. Story: Backend -> Databases ->
-  // Production.
   "backend-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "Backend Engineering", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "WebAuthn", "Prisma", "BullMQ", "Cron Jobs", "Redis Pub/Sub", "SSE", "Worker Queues", "Kafka", "Caching", "ARQ", "Pydantic"] },
+    { label: "Backend Engineering", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "WebAuthn", "Prisma", "BullMQ", "Cron Jobs", "Redis Pub/Sub", "SSE", "Worker Queues", "Kafka", "Caching"] },
     { label: "Databases", skills: ["MongoDB", "MySQL", "PostgreSQL", "Redis", "Redis Vector DB", "Chroma DB", "Qdrant DB"] },
-    { label: "Generative AI", skills: ["LLMs", "RAG", "LangChain", "Langgraph", "Multi-agent", "Context Engineering", "Embeddings", "Reranking"] },
+    { label: "Generative AI", skills: ["LLMs", "RAG", "LangChain", "Langgraph", "Multi-agent", "Context Engineering"] },
 
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "GitHub", "GitLab", "CI/CD", "Prometheus", "Grafana", "Loki", "Langfuse", "OpenTelemetry"] }
   ]
