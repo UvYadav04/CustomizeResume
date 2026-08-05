@@ -18,13 +18,20 @@ export const RESUME_SEED: Resume = {
   },
   summary:
     "AI Software Engineer focused on building LLM-powered applications, scalable AI systems, and production-ready backend architectures with expertise in Generative AI, RAG pipelines, agentic workflows, system design, and backend engineering, leveraging Data Structures and Algorithms to deliver efficient, reliable software at scale.",
-  // Full candidate pool, organized under the same category keys that
-  // ROLE_SKILL_LAYOUTS (lib/constants.ts) sources from. Nothing here is
-  // pre-trimmed for a specific role - buildRoleScopedResume() hands the
-  // WHOLE list per category to the model at generate() time, and the model
-  // picks the 5-6 strongest matches for the job description (see
-  // prompt.ts). Edit freely from Settings > Skills; every item here is
-  // something the person actually has, not a placeholder.
+  // Full candidate pool, keyed under the EXACT SAME category labels used in
+  // ROLE_SKILL_LAYOUTS (lib/constants.ts) - specifically, the union of every
+  // distinct category label that appears across all 4 roles there. A
+  // category name here always means the same thing it means in a role
+  // layout (no more mismatches like "Cloud & Infrastructure" here vs
+  // "Cloud, DevOps & Observability" there). A skill can legitimately sit
+  // under more than one category (e.g. React under both "Frontend
+  // Development" and "Frontend Engineering") since the role layouts
+  // themselves have that same overlap - that mirrors the real data, not a
+  // mistake. This pool only feeds Settings > Skills editing and the
+  // pre-role-selection default view; buildRoleScopedResume() (resume-utils.ts)
+  // does NOT read from here for actual tailoring - it uses
+  // ROLE_SKILL_LAYOUTS's own literal per-role skill lists, only
+  // cross-referencing this pool by name to carry over a skill's "bold" flag.
   skills: {
     Languages: [
       { name: "Python", bold: false },
@@ -35,44 +42,29 @@ export const RESUME_SEED: Resume = {
     ],
 
     "AI Engineering": [
-      { name: "LLMs", bold: false },
-      { name: "RAG", bold: false },
-      { name: "Agentic AI", bold: false },
-      { name: "AI Agents", bold: false },
-      { name: "Multi-Agent Systems", bold: false },
       { name: "LangChain", bold: false },
       { name: "LangGraph", bold: false },
+      { name: "Multi-Agent Systems", bold: false },
+      { name: "AI Agents", bold: false },
+      { name: "Agentic AI", bold: false },
+      { name: "RAG", bold: false },
       { name: "Prompt Engineering", bold: false },
+      { name: "Vector Databases", bold: false },
+      { name: "Embeddings", bold: false },
+      { name: "Reranking", bold: false }
+    ],
+
+    "Generative AI": [
+      { name: "LLMs", bold: false },
       { name: "Fine-Tuning", bold: false },
       { name: "LoRA", bold: false },
       { name: "QLoRA", bold: false },
       { name: "Ollama", bold: false },
-      { name: "Vector Databases", bold: false },
-      { name: "ONNX Runtime", bold: false }
-    ],
-
-    "Backend Development": [
-      { name: "FastAPI", bold: false },
-      { name: "Node.js", bold: false },
-      { name: "Express.js", bold: false },
-      { name: "REST APIs", bold: false },
-      { name: "WebSockets", bold: false },
-      { name: "JWT", bold: false },
-      { name: "OAuth 2.0", bold: false },
-      { name: "Microservices", bold: false },
-      { name: "BullMQ", bold: false },
-      { name: "Cron Jobs", bold: false },
-      { name: "Prisma", bold: false },
-      { name: "WebAuthn", bold: false }
-    ],
-
-    Databases: [
-      { name: "MongoDB", bold: false },
-      { name: "MySQL", bold: false },
-      { name: "PostgreSQL", bold: false },
-      { name: "Redis", bold: false },
-      { name: "Redis Vector DB", bold: false },
-      { name: "Vector Databases", bold: false }
+      { name: "ONNX Runtime", bold: false },
+      { name: "Context Engineering", bold: false },
+      { name: "AutoGen", bold: false },
+      { name: "Embeddings", bold: false },
+      { name: "Reranking", bold: false }
     ],
 
     "Frontend Development": [
@@ -81,23 +73,92 @@ export const RESUME_SEED: Resume = {
       { name: "Redux", bold: false },
       { name: "RTK Query", bold: false },
       { name: "Zustand", bold: false },
-      { name: "TanStack Query", bold: false },
       { name: "HTML5", bold: false },
       { name: "CSS3", bold: false },
       { name: "Tailwind CSS", bold: false },
-      { name: "ShadCN UI", bold: false },
-      { name: "Cesium.js", bold: false }
+      { name: "Cesium.js", bold: false },
+      { name: "Zod", bold: false },
+      { name: "Server-Side Rendering", bold: false }
     ],
 
-    "Distributed Systems": [
+    "Frontend Engineering": [
+      { name: "React", bold: false },
+      { name: "Next.js", bold: false },
+      { name: "Redux", bold: false },
+      { name: "RTK Query", bold: false },
+      { name: "Zustand", bold: false },
+      { name: "TanStack Query", bold: false },
+      { name: "HTML5", bold: false },
+      { name: "CSS3", bold: false },
+      { name: "ShadCN UI", bold: false },
+      { name: "Zod", bold: false },
+      { name: "Server-Side Rendering", bold: false }
+    ],
+
+    "Backend Development": [
+      { name: "FastAPI", bold: false },
+      { name: "Node.js", bold: false },
+      { name: "Express.js", bold: false },
+      { name: "REST APIs", bold: false },
+      { name: "JWT", bold: false },
+      { name: "OAuth 2.0", bold: false },
+      { name: "Microservices", bold: false },
+      { name: "WebAuthn", bold: false },
+      { name: "Prisma", bold: false },
+      { name: "BullMQ", bold: false },
+      { name: "Cron Jobs", bold: false },
       { name: "Redis Pub/Sub", bold: false },
       { name: "SSE", bold: false },
       { name: "Worker Queues", bold: false },
       { name: "Kafka", bold: false },
-      { name: "Caching", bold: false }
+      { name: "Caching", bold: false },
+      { name: "ARQ", bold: false },
+      { name: "Pydantic", bold: false }
     ],
 
-    "Cloud & Infrastructure": [
+    "Backend Engineering": [
+      { name: "FastAPI", bold: false },
+      { name: "Node.js", bold: false },
+      { name: "Express.js", bold: false },
+      { name: "REST APIs", bold: false },
+      { name: "JWT", bold: false },
+      { name: "OAuth 2.0", bold: false },
+      { name: "Microservices", bold: false },
+      { name: "WebAuthn", bold: false },
+      { name: "Prisma", bold: false },
+      { name: "BullMQ", bold: false },
+      { name: "Cron Jobs", bold: false },
+      { name: "Redis Pub/Sub", bold: false },
+      { name: "SSE", bold: false },
+      { name: "Worker Queues", bold: false },
+      { name: "Kafka", bold: false },
+      { name: "Caching", bold: false },
+      { name: "ARQ", bold: false },
+      { name: "Pydantic", bold: false }
+    ],
+
+    Databases: [
+      { name: "MongoDB", bold: false },
+      { name: "MySQL", bold: false },
+      { name: "PostgreSQL", bold: false },
+      { name: "Redis", bold: false },
+      { name: "Redis Vector DB", bold: false },
+      { name: "Chroma DB", bold: false },
+      { name: "Qdrant DB", bold: false }
+    ],
+
+    "AI Infrastructure, Cloud & Observability": [
+      { name: "Docker", bold: false },
+      { name: "Kubernetes", bold: false },
+      { name: "AWS", bold: false },
+      { name: "Nginx", bold: false },
+      { name: "Langfuse", bold: false },
+      { name: "Prometheus", bold: false },
+      { name: "Grafana", bold: false },
+      { name: "Loki", bold: false }
+    ],
+
+    "Cloud, DevOps & Observability": [
       { name: "Docker", bold: false },
       { name: "Kubernetes", bold: false },
       { name: "AWS", bold: false },
@@ -105,10 +166,7 @@ export const RESUME_SEED: Resume = {
       { name: "Git", bold: false },
       { name: "GitHub", bold: false },
       { name: "GitLab", bold: false },
-      { name: "CI/CD", bold: false }
-    ],
-
-    "Observability": [
+      { name: "CI/CD", bold: false },
       { name: "Prometheus", bold: false },
       { name: "Grafana", bold: false },
       { name: "Loki", bold: false },
