@@ -79,9 +79,9 @@ SUMMARY:
 - Length: exactly 40-45 words.
 
 SKILLS:
-- Each category gives you the FULL candidate pool the person actually has for it - not a pre-filtered shortlist - so your job here is to narrow it down.
-- Pick the 5-6 items per category that are the strongest match, prioritizing anything explicitly mentioned in the job description (bold:true).
-- If fewer than 5 candidates are genuinely relevant, return fewer - do not pad with irrelevant ones.
+- Each category gives you the FULL candidate pool the person actually has for it - not a pre-filtered shortlist - so your job here is to select the best subset of it.
+- Always return at least 5-6 items per category - never fewer, even if the job description barely mentions that category. Items do NOT need to appear in the job description; they only need to be genuinely relevant to that category's field/domain in general.
+- Bold (bold:true) only the items explicitly mentioned in the job description. Fill the rest of the 5-6+ with other candidate-pool items that fit the category, left unbolded - do not leave a category thin just because few items match the job description.
 - Never return more than 7 per category.
 - Then prioritize whitelist skills, if any are provided.
 - Never invent skills not present in that category's candidate pool.
