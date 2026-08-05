@@ -192,7 +192,7 @@ html, body {
 }
 
 .rt-contact {
-  margin: 4px 0 0;
+  margin: 1.5px 0 0;
   color: var(--rt-muted);
   font-family: var(--rt-mono);
   font-size: 8.8pt;

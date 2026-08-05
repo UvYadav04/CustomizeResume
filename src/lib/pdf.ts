@@ -136,7 +136,7 @@ function drawHeader(doc: jsPDF, cursor: Cursor, resume: Resume, templateId: stri
   doc.setTextColor(colors.ink);
   const nameY = cursor.y + lh(FS_NAME, 1.05);
   doc.text(resume.name || "", A4_WIDTH_MM / 2, nameY, { align: "center" });
-  cursor.y = nameY + lh(FS_NAME, 1.05) * 0.18;
+  cursor.y = nameY + lh(FS_NAME, 1.05) * 0.08;
 
   const links: ResumeLink[] = resume.contact?.links || [];
   if (links.length) {

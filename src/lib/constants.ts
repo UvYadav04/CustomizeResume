@@ -99,15 +99,20 @@ export function createDefaultJobDescription(): JobDescription {
   };
 }
 
+// Matches the exact union of category labels used across ROLE_SKILL_LAYOUTS
+// below (see resume-seed.ts's skills block, which now uses these same 10
+// labels as its keys) - just controls display order in Settings > Skills.
 export const SKILL_CATEGORY_ORDER = [
   "Languages",
   "AI Engineering",
-  "Backend Development",
-  "Databases",
+  "Generative AI",
   "Frontend Development",
-  "Distributed Systems",
-  "Cloud & Infrastructure",
-  "Observability"
+  "Frontend Engineering",
+  "Backend Development",
+  "Backend Engineering",
+  "Databases",
+  "AI Infrastructure, Cloud & Observability",
+  "Cloud, DevOps & Observability"
 ];
 
 export interface RolePreset {
@@ -133,28 +138,36 @@ export interface RoleSkillCategory {
 export const ROLE_SKILL_LAYOUTS: Record<string, RoleSkillCategory[]> = {
   "ai-engineer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Vector Databases"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Vector Databases", "Embeddings", "Reranking"] },
     { label: "Generative AI", skills: ["LLMs", "Fine-Tuning", "LoRA", "QLoRA", "Ollama", "ONNX Runtime"] },
-    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma"] },
+    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "ARQ", "Pydantic"] },
     { label: "AI Infrastructure, Cloud & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "Langfuse", "Prometheus", "Grafana", "Loki"] }
   ],
   "fullstack-ai-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering"] },
-    { label: "Frontend Development", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "HTML5", "CSS3", "Tailwind CSS"] },
-    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "WebAuthn"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering", "Embeddings", "Reranking"] },
+    { label: "Frontend Development", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "HTML5", "CSS3", "Tailwind CSS", "Zod", "Server-Side Rendering"] },
+    { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "WebAuthn", "ARQ", "Pydantic"] },
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "GitHub", "GitLab", "Langfuse", "Prometheus", "Grafana", "Loki"] }
   ],
   "software-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "Frontend Engineering", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "TanStack Query", "HTML5", "CSS3", "ShadCN UI"] },
-    { label: "Backend Engineering", skills: ["Node.js", "Express.js", "FastAPI", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "MongoDB", "MySQL", "PostgreSQL", "Redis", "Prisma"] },
-    { label: "Generative AI", skills: ["LLMs", "Multi-Agent Systems", "RAG", "LangChain", "LangGraph", "Context Engineering", "AutoGen", "Prompt Engineering"] },
+    { label: "Frontend Engineering", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "TanStack Query", "HTML5", "CSS3", "ShadCN UI", "Zod", "Server-Side Rendering"] },
+    { label: "Backend Engineering", skills: ["Node.js", "Express.js", "FastAPI", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "MongoDB", "MySQL", "PostgreSQL", "Redis", "Prisma", "ARQ", "Pydantic"] },
+    { label: "Generative AI", skills: ["LLMs", "Multi-Agent Systems", "RAG", "LangChain", "LangGraph", "Context Engineering", "AutoGen", "Prompt Engineering", "Embeddings", "Reranking"] },
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "GitHub", "GitLab", "CI/CD", "Prometheus", "Grafana", "Loki", "Langfuse", "OpenTelemetry"] }
   ],
+  // NOTE: "Generative AI" here is deliberately left at 6 items (not
+  // enriched with Embeddings/Reranking like the other roles' equivalent
+  // category) - going to 8 pushed it past the MAX_VISIBLE_SKILLS(7) render
+  // cap for the first time and wrapped the row in the preview, which
+  // overflowed the page. Every other category below was already well past
+  // that cap before enrichment, so adding to those doesn't change what
+  // renders. If more room is needed here later, prefer trimming something
+  // else out rather than letting this one cross 7.
   "backend-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "Backend Engineering", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "WebAuthn", "Prisma", "BullMQ", "Cron Jobs", "Redis Pub/Sub", "SSE", "Worker Queues", "Kafka", "Caching"] },
+    { label: "Backend Engineering", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "JWT", "OAuth 2.0", "Microservices", "WebAuthn", "Prisma", "BullMQ", "Cron Jobs", "Redis Pub/Sub", "SSE", "Worker Queues", "Kafka", "Caching", "ARQ", "Pydantic"] },
     { label: "Databases", skills: ["MongoDB", "MySQL", "PostgreSQL", "Redis", "Redis Vector DB", "Chroma DB", "Qdrant DB"] },
     { label: "Generative AI", skills: ["LLMs", "RAG", "LangChain", "Langgraph", "Multi-agent", "Context Engineering"] },
 
