@@ -301,15 +301,16 @@ export const RESUME_SEED: Resume = {
       institution: "Indian Institute of Information Technology Vadodara",
       degree: "B.Tech in Computer Science and Engineering",
       duration: "Nov 2022 - May 2026",
-      location: "India",
-      coursework: [
-        "Data Structures and Algorithms",
-        "Operating Systems",
-        "Database Management Systems",
-        "Computer Networks",
-        "Object-Oriented Programming",
-        "Machine Learning"
-      ]
+      location: "India"
+      // Hidden from the rendered resume for now - restore by uncommenting.
+      // coursework: [
+      //   "Data Structures and Algorithms",
+      //   "Operating Systems",
+      //   "Database Management Systems",
+      //   "Computer Networks",
+      //   "Object-Oriented Programming",
+      //   "Machine Learning"
+      // ]
     }
   ],
   // Hidden from the rendered resume for now - restore by uncommenting.
