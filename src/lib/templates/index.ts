@@ -73,10 +73,13 @@ const AI_FOCUSED_TOKENS = `
 }
 `;
 
-// SDE-role variant: dense, slate/green accent evoking a terminal/
-// engineering feel. The name previously forced monospace via an
-// !important override - switched to the same professional serif as the
-// other templates so the name reads consistently across all three.
+// SDE-role variant: slate/green accent evoking a terminal/engineering feel.
+// The name previously forced monospace via an !important override -
+// switched to the same professional serif as the other templates so the
+// name reads consistently across all three. Font sizes match AI_FOCUSED_TOKENS
+// exactly now (were previously smaller/denser, which read as an unintentional
+// bug rather than a deliberate design choice) - only colors/accent differ
+// between the three templates now.
 const SDE_FOCUSED_TOKENS = `
 :root {
   --rt-page-width: 210mm;
@@ -86,13 +89,13 @@ const SDE_FOCUSED_TOKENS = `
   --rt-pad-top: 3.5mm;
   --rt-pad-x: 11mm;
   --rt-pad-bottom: 8mm;
-  --rt-fs-name: 22pt;
-  --rt-fs-section: 10pt;
-  --rt-fs-entry: 10.2pt;
-  --rt-fs-role: 9.3pt;
-  --rt-fs-body: 9pt;
-  --rt-fs-skill: 8.6pt;
-  --rt-fs-meta: 8.2pt;
+  --rt-fs-name: 23pt;
+  --rt-fs-section: 10.5pt;
+  --rt-fs-entry: 10.5pt;
+  --rt-fs-role: 9.5pt;
+  --rt-fs-body: 9.2pt;
+  --rt-fs-skill: 8.8pt;
+  --rt-fs-meta: 8.4pt;
   --rt-ink: #17211d;
   --rt-muted: #4c5c55;
   --rt-faint: #869088;
