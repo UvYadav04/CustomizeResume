@@ -306,8 +306,13 @@ html, body {
 
 /* Project tech-line renders above the bullets (see defaultContent.ts) -
    indent it to line up with the bullet text start (.rt-entry-bullets li's
-   padding-left: 12px), not the bullet dots/heading above it. */
-.rt-project-top + .rt-tech-line { padding-left: 12px; }
+   padding-left: 12px), not the bullet dots/heading above it. Also bumped
+   to --rt-muted (same shade as .rt-project-secondary) instead of the
+   default --rt-faint - the project tech stack was reading too light/
+   unclear at --rt-faint. Scoped to only the project's tech-line (which
+   sits right after .rt-project-top), not the experience entries' "Tech
+   Stack:" line (which sits after .rt-entry-bullets instead). */
+.rt-project-top + .rt-tech-line { padding-left: 12px; color: var(--rt-muted); }
 
 .rt-project-links { display: flex; gap: 5px; white-space: nowrap; }
 .rt-project-links a { color: var(--rt-accent); text-decoration: none; }

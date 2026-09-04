@@ -49,18 +49,22 @@ export const RESUME_SEED: Resume = {
       { name: "Agentic AI", bold: false },
       { name: "RAG", bold: false },
       { name: "Prompt Engineering", bold: false },
+      { name: "Context Engineering", bold: false },
       { name: "Vector Databases", bold: false },
       { name: "Embeddings", bold: false },
       { name: "Reranking", bold: false }
     ],
 
+    // Fine-Tuning/LoRA/QLoRA swapped out for more current, trending GenAI
+    // topics (MCP, function calling, structured outputs) - see the same
+    // swap and rationale in ROLE_SKILL_LAYOUTS (constants.ts).
     "Generative AI": [
       { name: "LLMs", bold: false },
-      { name: "Fine-Tuning", bold: false },
-      { name: "LoRA", bold: false },
-      { name: "QLoRA", bold: false },
       { name: "Ollama", bold: false },
       { name: "ONNX Runtime", bold: false },
+      { name: "MCP", bold: false },
+      { name: "Function Calling", bold: false },
+      { name: "Structured Outputs", bold: false },
       { name: "Context Engineering", bold: false },
       { name: "AutoGen", bold: false },
       { name: "Embeddings", bold: false },
@@ -178,7 +182,7 @@ export const RESUME_SEED: Resume = {
     {
       companyName: "BC2RI",
       role: "Software Developer",
-      duration: "June 2026 - Present",
+      duration: "June 2026 - Aug 2026",
       location: "Remote",
       points: [
         "Owned end-to-end frontend development of the company's MVP using React, TypeScript, Redux, and RTK Query, delivering a scalable healthcare platform supporting providers, patients, and caregivers.",

@@ -138,14 +138,20 @@ export interface RoleSkillCategory {
 export const ROLE_SKILL_LAYOUTS: Record<string, RoleSkillCategory[]> = {
   "ai-engineer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Vector Databases", "Embeddings", "Reranking"] },
-    { label: "Generative AI", skills: ["LLMs", "Fine-Tuning", "LoRA", "QLoRA", "Ollama", "ONNX Runtime"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "AI Agents", "Agentic AI", "RAG", "Prompt Engineering", "Context Engineering", "Vector Databases", "Embeddings", "Reranking"] },
+    // Swapped out Fine-Tuning/LoRA/QLoRA for more current-facing GenAI
+    // topics (MCP, function calling, structured outputs are 2026's most
+    // in-demand agentic-AI-adjacent skills) - kept at 6 items, same as
+    // before, since this category was previously right at the
+    // MAX_VISIBLE_SKILLS(7) edge and going over it once already caused a
+    // page-overflow bug (see the backend-developer note below).
+    { label: "Generative AI", skills: ["LLMs", "Ollama", "ONNX Runtime", "MCP", "Function Calling", "Structured Outputs"] },
     { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "ARQ", "Pydantic"] },
     { label: "AI Infrastructure, Cloud & Observability", skills: ["Docker", "Kubernetes", "AWS", "Nginx", "Langfuse", "Prometheus", "Grafana", "Loki"] }
   ],
   "fullstack-ai-developer": [
     { label: "Languages", skills: ["Python", "TypeScript", "JavaScript", "SQL", "C++"] },
-    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering", "Embeddings", "Reranking"] },
+    { label: "AI Engineering", skills: ["LangChain", "LangGraph", "Multi-Agent Systems", "RAG", "Vector Databases", "LLMs", "Prompt Engineering", "Context Engineering", "Embeddings", "Reranking"] },
     { label: "Frontend Development", skills: ["React", "Next.js", "Redux", "RTK Query", "Zustand", "HTML5", "CSS3", "Tailwind CSS", "Zod", "Server-Side Rendering"] },
     { label: "Backend Development", skills: ["FastAPI", "Node.js", "Express.js", "REST APIs", "MongoDB", "MySQL", "Redis", "Prisma", "WebAuthn", "ARQ", "Pydantic"] },
     { label: "Cloud, DevOps & Observability", skills: ["Docker", "Kubernetes", "AWS", "GitHub", "GitLab", "Langfuse", "Prometheus", "Grafana", "Loki"] }
