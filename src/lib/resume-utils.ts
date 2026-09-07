@@ -5,6 +5,7 @@ import type {
   ProjectSelection,
   Resume,
   ReviewSelections,
+  RoleSummaries,
   SelectionState,
   SkillItem,
   Suggestions
@@ -17,6 +18,20 @@ import type {
 // skill names - but this number is the absolute max either way.
 const MAX_VISIBLE_SKILLS = 7;
 const LENGTH_TOLERANCE_RATIO = 1.15;
+
+// Truncation can land inside a "**bold**" span (used by the summary/skill
+// text convention - see utils.ts formatTextWithBoldMarkers) and leave a
+// single dangling "**" behind, which would render as literal asterisks
+// instead of bold. If a cut string has an odd number of "**" markers, drop
+// back to just before the last unmatched one so the markup stays balanced.
+function stripDanglingBoldMarker(text: string): string {
+  const markerCount = (text.match(/\*\*/g) || []).length;
+  if (markerCount % 2 === 0) {
+    return text;
+  }
+  const lastIdx = text.lastIndexOf("**");
+  return text.slice(0, lastIdx);
+}
 
 export function clampToLength(text: string, referenceText: string, toleranceRatio = LENGTH_TOLERANCE_RATIO): string {
   const value = String(text || "");
@@ -35,10 +50,10 @@ export function clampToLength(text: string, referenceText: string, toleranceRati
     truncated.lastIndexOf("? ")
   );
   if (lastSentenceEnd > maxLen * 0.5) {
-    return truncated.slice(0, lastSentenceEnd + 1).trim();
+    return stripDanglingBoldMarker(truncated.slice(0, lastSentenceEnd + 1)).trim();
   }
   const lastSpace = truncated.lastIndexOf(" ");
-  const cut = lastSpace > maxLen * 0.5 ? truncated.slice(0, lastSpace) : truncated;
+  const cut = stripDanglingBoldMarker(lastSpace > maxLen * 0.5 ? truncated.slice(0, lastSpace) : truncated);
   return `${cut.trim().replace(/[,;:]+$/, "")}.`;
 }
 
@@ -93,8 +108,19 @@ function flattenSkillsByName(skills: Record<string, SkillItem[]> = {}): Map<stri
 // let it pick the best 5-6 based on the job description (see prompt.ts).
 // Falls back to the untouched master skill set for any roleType without an
 // explicit layout.
-export function buildRoleScopedResume(resume: Resume, roleType: string): Resume {
+//
+// Also swaps resume.summary for that role's own master summary (see
+// DEFAULT_ROLE_SUMMARIES / Settings > Summary), same idea as skills: each
+// role has its own honest, on-theme starting point instead of one generic
+// summary reused everywhere, and the LLM sharpens that per-role baseline
+// against the job description rather than starting from scratch. Falls back
+// to the untouched resume.summary if the role has no entry.
+export function buildRoleScopedResume(resume: Resume, roleType: string, roleSummaries: RoleSummaries = {}): Resume {
   const next = clone(resume);
+  if (roleSummaries[roleType]) {
+    next.summary = roleSummaries[roleType];
+  }
+
   const layout = ROLE_SKILL_LAYOUTS[roleType];
   if (!layout) {
     return next;

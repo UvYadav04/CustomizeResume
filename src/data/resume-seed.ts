@@ -17,7 +17,7 @@ export const RESUME_SEED: Resume = {
     ]
   },
   summary:
-    "AI Software Engineer focused on building LLM-powered applications, scalable AI systems, and production-ready backend architectures with expertise in Generative AI, RAG pipelines, agentic workflows, system design, and backend engineering, leveraging Data Structures and Algorithms to deliver efficient, reliable software at scale.",
+    "AI Software Engineer combining expertise in Generative AI, RAG pipelines, and agentic workflows with full-stack software development across React, Next.js, Python, and FastAPI. Skilled in designing production-ready backend architectures, containerized deployments with Docker, and observability with Grafana, leveraging Data Structures and Algorithms and system design to deliver efficient, reliable software at scale.",
   // Full candidate pool, keyed under the EXACT SAME category labels used in
   // ROLE_SKILL_LAYOUTS (lib/constants.ts) - specifically, the union of every
   // distinct category label that appears across all 4 roles there. A

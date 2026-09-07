@@ -148,10 +148,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { resume, jobDescription, settings } = get();
     set({ isGenerating: true, error: "" });
     try {
-      // Trimmed to the role's 5 skill categories, for this generation only.
-      // Built fresh from the untouched master `resume` every time - never
-      // the other way around.
-      const roleScopedResume = buildRoleScopedResume(resume, jobDescription.roleType);
+      // Trimmed to the role's 5 skill categories (and swapped to that role's
+      // master summary), for this generation only. Built fresh from the
+      // untouched master `resume` every time - never the other way around.
+      const roleScopedResume = buildRoleScopedResume(resume, jobDescription.roleType, settings.roleSummaries);
       const result = await tailorResumeWithFallback({
         resume: roleScopedResume,
         jobDescription,

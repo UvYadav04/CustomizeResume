@@ -77,6 +77,7 @@ SUMMARY:
 - Rewrite the summary to maximize relevance to the job description, using only facts already present elsewhere in the resume.
 - Open by identifying the candidate as a "${targetRoleCategory}" (or a natural variant).
 - Length: exactly 40-45 words.
+- To bold a word or phrase, put ** immediately before it and ** immediately after it - e.g. **${targetRoleCategory}**, **FastAPI**. This is the same convention already used for skills. Always bold the job title/role phrase at the start, plus every skill, tool, framework, or technology name mentioned in the summary that also appears in the job description. Bold single words or short phrases only - never bold a whole sentence or clause. Aim for roughly 4-7 bolded terms total; do not bold generic words (e.g. "scalable", "reliable", "production-ready").
 
 SKILLS:
 - Each category gives you the FULL candidate pool the person actually has for it - not a pre-filtered shortlist - so your job here is to select the best subset of it.

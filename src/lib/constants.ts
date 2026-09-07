@@ -1,4 +1,4 @@
-import type { JobDescription, LayoutSettings, ProviderId, Settings } from "./types";
+import type { JobDescription, LayoutSettings, ProviderId, RoleSummaries, Settings } from "./types";
 
 export const STORAGE_KEYS = {
   settings: "resumeTailor.settings",
@@ -59,10 +59,31 @@ export const DEFAULT_LAYOUT_SETTINGS: LayoutSettings = {
   paddingBottom: 8
 };
 
+// Per-role master summaries (see the RoleSummaries doc comment in types.ts).
+// Each is the pre-tailoring starting point for that role - written to
+// reflect what that role's ROLE_SKILL_LAYOUTS/experience actually cover, so
+// the LLM has an honest, on-theme baseline to sharpen rather than a single
+// generic summary reused for every role. SDE and Backend intentionally
+// mention AI/LLM work only briefly (a real but secondary strength), while AI
+// Engineer and Full Stack AI Engineer lead with it. Already written using
+// the same "**word**" bold convention the LLM is asked to use (see
+// prompt.ts) so the master view looks right even before generation.
+export const DEFAULT_ROLE_SUMMARIES: RoleSummaries = {
+  "ai-engineer":
+    "**AI Engineer** building production LLM systems - designing **RAG** pipelines, multi-agent orchestration, and low-latency inference with **FastAPI**, **LangChain**, and **Docker**. Skilled in vector search (**Qdrant**), intent classification, and agentic workflows, combining Generative AI expertise with strong Data Structures and Algorithms fundamentals to ship reliable, scalable AI applications.",
+  "fullstack-ai-developer":
+    "**Full Stack AI Engineer** building end-to-end AI products - from **React**/**Next.js** interfaces to **FastAPI** backends powering **RAG** pipelines and multi-agent systems. Experienced with **TypeScript**, **Redis**, and **Docker** for scalable deployments, blending Generative AI engineering with production-grade full-stack development to deliver complete, user-facing AI applications.",
+  "software-developer":
+    "**Software Development Engineer** with strong full-stack experience across **React**, **Next.js**, **Node.js**, and **FastAPI**, building scalable web platforms with clean system design and robust REST APIs. Comfortable applying **Generative AI** and LLM-based tooling where it adds value, backed by strong Data Structures and Algorithms fundamentals for efficient, reliable software.",
+  "backend-developer":
+    "**Backend Engineer** specializing in high-performance APIs and distributed systems using **FastAPI**, **Node.js**, **Redis**, and **Docker**, with experience in caching, worker queues, and database design (**MongoDB**, **PostgreSQL**). Applies **RAG** and LLM-based tooling to backend workflows where relevant, delivering efficient, production-ready systems at scale."
+};
+
 export const DEFAULT_SETTINGS: Settings = {
   templateId: "auto",
   skillWhitelist: [],
   layout: DEFAULT_LAYOUT_SETTINGS,
+  roleSummaries: DEFAULT_ROLE_SUMMARIES,
   providerOrder: ["groq", "gemini", "ollama"],
   providers: {
     groq: {

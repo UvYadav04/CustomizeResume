@@ -1,9 +1,27 @@
 import { Check, Pencil, X } from "lucide-react";
+import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SyncedTextarea } from "@/components/settings/SyncedTextarea";
 import type { SelectionState } from "@/lib/types";
+
+// The summary (and skill free-text) fields use a "**word**" convention to
+// mark bold spans - see lib/utils.ts formatTextWithBoldMarkers, used by the
+// HTML/PDF renderers. DiffRow's "current" box is plain React children, not
+// HTML, so without this it would show literal "**word**" asterisks whenever
+// the baseline text already contains bold markers (e.g. after a previous
+// bolded suggestion was accepted). Renders the same convention as visual
+// bold instead.
+function renderBoldMarkers(value: React.ReactNode): React.ReactNode {
+  if (typeof value !== "string" || !value.includes("**")) {
+    return value;
+  }
+  const parts = value.split(/\*\*(.+?)\*\*/g);
+  return parts.map((part, index) =>
+    index % 2 === 1 ? <strong key={index}>{part}</strong> : <Fragment key={index}>{part}</Fragment>
+  );
+}
 
 interface DiffRowProps {
   label?: string;
@@ -44,7 +62,7 @@ export function DiffRow({
           {label && <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{label}</div>}
           {!identical && (
             <div className="rounded bg-muted/60 px-2 py-1 text-xs text-muted-foreground line-through decoration-muted-foreground/40">
-              {current}
+              {renderBoldMarkers(current)}
             </div>
           )}
           {isEditable ? (
@@ -57,7 +75,7 @@ export function DiffRow({
               <Pencil className="pointer-events-none absolute right-1.5 top-1.5 h-3 w-3 text-accent-foreground/40" />
             </div>
           ) : (
-            <div className="rounded bg-accent/60 px-2 py-1 text-xs text-accent-foreground">{suggested}</div>
+            <div className="rounded bg-accent/60 px-2 py-1 text-xs text-accent-foreground">{renderBoldMarkers(suggested)}</div>
           )}
           {reason && <div className="text-[11px] italic text-muted-foreground">{reason}</div>}
         </div>

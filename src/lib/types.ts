@@ -73,10 +73,18 @@ export interface LayoutSettings {
   paddingBottom: number;
 }
 
+// Keyed by role id (matches RolePreset.id / JobDescription.roleType, e.g.
+// "ai-engineer") - each role's own master/base summary, edited from Settings
+// > Summary and used as the pre-tailoring starting point for that role (see
+// buildRoleScopedResume in resume-utils.ts). Falls back to resume.summary
+// for any role without an explicit entry.
+export type RoleSummaries = Record<string, string>;
+
 export interface Settings {
   templateId: string;
   skillWhitelist: string[];
   layout: LayoutSettings;
+  roleSummaries: RoleSummaries;
   providerOrder: ProviderId[];
   providers: Record<ProviderId, ProviderSettings>;
 }

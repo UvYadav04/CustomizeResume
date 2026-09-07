@@ -11,11 +11,10 @@ import { TemplatesTab } from "./TemplatesTab";
 import { Save } from "lucide-react";
 import type { Resume, Settings } from "@/lib/types";
 
-// Providers/Summary/Skills all edit local draft state here and only reach
-// the store (and localStorage) when "Save changes" is clicked - same
-// manual-save pattern the Templates tab already uses for its CSS/HTML.
-// Opening the dialog always re-syncs the draft from whatever's currently
-// saved, so closing without saving simply discards unsaved edits.
+// All tabs edit local draft state here and only reach the store (and
+// localStorage) when "Save changes" is clicked. Opening the dialog always
+// re-syncs the draft from whatever's currently saved, so closing without
+// saving simply discards unsaved edits.
 export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const resume = useAppStore((s) => s.resume);
   const settings = useAppStore((s) => s.settings);
@@ -77,10 +76,6 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             <SkillsTab resume={draftResume} onResumeChange={setDraftResume} />
           </TabsContent>
           <TabsContent value="templates">
-            {/* The default-template picker shares this dialog's draft/Save
-                flow; the per-template HTML/CSS editor below it manages its
-                own separate draft + Save, since each template's content is
-                saved independently. */}
             <TemplatesTab settings={draftSettings} onSettingsChange={setDraftSettings} />
           </TabsContent>
         </Tabs>

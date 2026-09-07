@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SyncedTextarea } from "./SyncedTextarea";
 import { clone } from "@/lib/utils";
+import { ROLE_PRESETS, DEFAULT_ROLE_SUMMARIES } from "@/lib/constants";
 import type { Resume, Settings } from "@/lib/types";
 
 // Draft-only, like ProvidersTab - changes here update the dialog's local
@@ -65,12 +66,38 @@ export function SummaryTab({
       </div>
 
       <div className="space-y-1.5">
-        <Label>Master summary</Label>
+        <Label>Master summary (fallback / general)</Label>
         <Textarea
           className="min-h-[100px] text-sm"
           value={resume.summary}
           onChange={(e) => onResumeChange({ ...resume, summary: e.target.value })}
         />
+        <p className="text-[11px] text-muted-foreground">
+          Used only for roles without a dedicated summary below. Wrap words in <code>**like this**</code> to bold
+          them.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Per-role summaries</Label>
+        <p className="-mt-1 text-[11px] text-muted-foreground">
+          Each role starts from its own summary before the AI tailors it to a job description. Wrap words in{" "}
+          <code>**like this**</code> to bold them.
+        </p>
+        {ROLE_PRESETS.map((role) => (
+          <div key={role.id} className="space-y-1">
+            <span className="text-xs font-medium">{role.label}</span>
+            <Textarea
+              className="min-h-[90px] text-sm"
+              value={settings.roleSummaries[role.id] ?? DEFAULT_ROLE_SUMMARIES[role.id] ?? ""}
+              onChange={(e) => {
+                const next = clone(settings);
+                next.roleSummaries = { ...next.roleSummaries, [role.id]: e.target.value };
+                onSettingsChange(next);
+              }}
+            />
+          </div>
+        ))}
       </div>
 
       <div className="space-y-1.5">
