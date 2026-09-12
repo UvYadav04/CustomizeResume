@@ -74,10 +74,12 @@ General rules (apply to every section below):
 ${audienceInstruction(jobDescription.roleType)}
 
 SUMMARY:
-- Rewrite the summary to maximize relevance to the job description, using only facts already present elsewhere in the resume.
-- Open by identifying the candidate as a "${targetRoleCategory}" (or a natural variant).
-- Length: exactly 40-45 words.
-- To bold a word or phrase, put ** immediately before it and ** immediately after it - e.g. **${targetRoleCategory}**, **FastAPI**. This is the same convention already used for skills. Always bold the job title/role phrase at the start, plus every skill, tool, framework, or technology name mentioned in the summary that also appears in the job description. Bold single words or short phrases only - never bold a whole sentence or clause. Aim for roughly 4-7 bolded terms total; do not bold generic words (e.g. "scalable", "reliable", "production-ready").
+- The summary you are given is already written the way this candidate wants to sound - keep it that way. Do NOT rewrite it from scratch, restructure its sentences, or turn it into a list of skills/tools. This is a light edit, not a rewrite.
+- Keep the same sentence structure, sentence count, clause order, and overall wording as the given summary. Change only a small number of individual words or short phrases - swap out a skill/tool/keyword for a different one ONLY if the job description clearly calls for it AND the candidate genuinely has that skill elsewhere in this resume (skills, skillsUsed, techStack). Do not add technologies that weren't already in the summary or resume.
+- Do not add new bolded keywords beyond what's already bolded, and do not inflate it into a denser skills-dump. It should read as the same natural sentence with a few words nudged toward the job description, not a different summary.
+- Open by identifying the candidate as a "${targetRoleCategory}" (or a natural variant), same as the original does.
+- Keep the length within a few words of the original - do not shorten it into a terser, choppier style.
+- To bold a word or phrase, put ** immediately before it and ** immediately after it - e.g. **${targetRoleCategory}**, **FastAPI**. This is the same convention already used for skills. Keep whatever the original summary already has bolded; only change the bolding on a term if you changed that specific word. Bold single words or short phrases only - never bold a whole sentence or clause.
 
 SKILLS:
 - Each category gives you the FULL candidate pool the person actually has for it - not a pre-filtered shortlist - so your job here is to select the best subset of it.
