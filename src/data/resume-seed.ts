@@ -11,7 +11,7 @@ export const RESUME_SEED: Resume = {
     location: "Gurugram, India",
     links: [
       { label: "GitHub", url: "https://github.com/Uvyadav04" },
-      { label: "LinkedIn", url: "https://linkedin.com/in/dineshyadav" },
+      { label: "LinkedIn", url: "https://www.linkedin.com/in/dinesh-yadav-264113265" },
       { label: "Portfolio", url: "https://dineshyadav.onrender.com" },
       { label: "LeetCode", url: "https://leetcode.com/u/dineshnirban01" }
     ]
